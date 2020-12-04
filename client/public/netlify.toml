@@ -1,9 +1,0 @@
-# Production context:
-# All deploys from the main repository branch
-# will inherit these settings.
-[context.production]
-  command = "make production"
-  [context.production.environment]
-    VUE_APP_NAME='Chat'
-    VUE_APP_API='http://192.168.178.31:3000/api'
-    VUE_APP_SOCKET_URL='http://192.168.178.31:3000'
