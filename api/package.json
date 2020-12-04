@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "start": "node -r ts-node/register ./src/server.ts",
+    "start": "nodemon -r ts-node/register ./src/server.ts",
     "start:watch": "fuser -k 5858/tcp & nodemon -r ts-node/register ./src/server.ts",
     "start:watch:nodemon" : "nodemon --delay 80ms --exec 'fuser -k 5858/tcp; node --inspect=5858 -r ts-node/register ./src/server.ts'",
     "build": "tsc"
