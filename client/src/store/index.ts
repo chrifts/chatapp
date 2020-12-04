@@ -168,8 +168,10 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    
     async GET_CONTACTS({commit}, payload) {
-      const res = await axiosRequest('POST', process.env.VUE_APP_API + '/user/get-contacts', {email: payload.user.email}, {headers: {"x-auth-token": payload.jwtKey}})
+      const urlApi: string = process.env.NODE_ENV == 'development' ? process.env.VUE_APP_API! : process.env.VUE_APP_API_PROD!;
+      const res = await axiosRequest('POST', urlApi + '/user/get-contacts', {email: payload.user.email}, {headers: {"x-auth-token": payload.jwtKey}})
       commit('SOCKET_setContacts', res.data.contacts)
     },
     SET_USER({commit}, payload) {
