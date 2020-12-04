@@ -37,7 +37,7 @@ require('./socket')(io);
 const api = require("./routes")(io);
 app.use("/api", api);
 
-http.listen(3000, '192.168.178.31', function () {
+http.listen(3000, function () {
     console.log('App is listening on port 3000!');
 });
 
