@@ -1,0 +1,49 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "node --inspect=5858 -r ts-node/register ./src/server.ts",
+    "start:watch": "fuser -k 5858/tcp & nodemon -r ts-node/register ./src/server.ts",
+    "start:watch:nodemon" : "nodemon --delay 80ms --exec 'fuser -k 5858/tcp; node --inspect=5858 -r ts-node/register ./src/server.ts'",
+    "build": "tsc"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-openid-connect": "^2.0.0",
+    "firebase-admin": "^9.3.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^3.6.3",
+    "mongoose": "^5.10.14",
+    "rand-token": "^1.0.1",
+    "socket.io": "^3.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.6",
+    "eslint": "^7.12.1",
+    "eslint-plugin-import": "^2.22.1",
+    "jest": "^26.6.3",
+    "nodemon": "^2.0.6",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.5"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "**/*.test.ts",
+      "**/*.spec.ts",
+      ".git",
+      "node_modules"
+    ],
+    "watch": [
+      "src"
+    ],
+    "exec": "npm start",
+    "ext": "ts"
+  }
+}

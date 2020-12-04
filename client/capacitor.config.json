@@ -1,0 +1,14 @@
+{
+  "appId": "com.vuets.app",
+  "appName": "vuets",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "dist",
+  "linuxAndroidStudioPath": "/home/cristian/android-studio/bin/studio.sh",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "cordova": {}
+}

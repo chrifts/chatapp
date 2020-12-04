@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">vuets</string>
+    <string name="title_activity_main">vuets</string>
+    <string name="package_name">com.vuets.app</string>
+    <string name="custom_url_scheme">com.vuets.app</string>
+</resources>
