@@ -253,7 +253,9 @@ export default class NavBar extends Vue {
   public logout() {
     axiosRequest('POST', (this.$root as any).urlApi + '/auth/logout', {refreshToken: this.$cookies.get('refreshToken')} )
     store.commit("setMainLoading", true);
-    this.$socket.client.disconnect();
+    if(this.$socket.client) {
+      this.$socket.client.disconnect();
+    }
     this.$store.dispatch("LOGOUT_USER");
     this.$cookies.remove('jwt');
     this.$cookies.remove('refreshToken');

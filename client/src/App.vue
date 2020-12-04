@@ -46,9 +46,7 @@ export default class App extends Vue {
   @Watch('$store.state.firstLoad') 
   onFristLoadChanged(init: any) {
     if(init) {
-      if(this.$socket.client) {
-        this.$socket.client.connect();
-      }
+      console.log(this.$store.state)
       this.appInit()
     }
   }
@@ -70,6 +68,7 @@ export default class App extends Vue {
         this.$store.commit('setSelectedChat', null)
         this.$store.commit('setSelectedChat', sc);
       } 
+      console.log(this)
       this.appLoading = false;
       //listen socket events
     }

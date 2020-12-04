@@ -16,7 +16,7 @@ const notif: Notifications = { };
 export default new Vuex.Store({
   state: {
     firstLoad: false,
-    user: null,
+    user: {},
     status: null,
     selectedChat: null,
     mainLoading: false,
@@ -156,6 +156,7 @@ export default new Vuex.Store({
     },
     setUser(state, payload) {
       state.user = payload;
+      // state.user = {... state.user}
     },
     setStatus(state, payload) {
       state.status = payload;

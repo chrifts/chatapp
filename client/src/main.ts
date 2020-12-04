@@ -14,9 +14,26 @@ import { defaultSocketEvents, customSocketEvents } from './helpers';
 
 dotenv.config();
 
-let app: any;
+let app: Vue;
 const urlApi: string = process.env.NODE_ENV == 'development' ? process.env.VUE_APP_API! : process.env.VUE_APP_API_PROD!;
 const socketUrl: string = process.env.NODE_ENV == 'development' ? process.env.VUE_APP_SOCKET_URL! : process.env.VUE_APP_SOCKET_URL_PROD!;
+
+function getCookie(cname) {
+  const name = cname + "=";
+  const decodedCookie = decodeURIComponent(document.cookie);
+  const ca = decodedCookie.split(';');
+  for(let i = 0; i <ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
 const init = () => {
   if (!app) {
     app = new Vue({
@@ -28,11 +45,8 @@ const init = () => {
       },
       data: ()=>({
         urlApi: urlApi,
-        user: {},
       }),
-      beforeCreate: async function () {
-        (option: CookiesOption) => void 
-        
+      beforeCreate: async function () {        
         this.$cookies.config(
           {
             expires: '30d',
@@ -45,13 +59,13 @@ const init = () => {
         if(sessionToken) {
           const user = await axiosRequest('POST', urlApi + '/get-user', {}, {headers: {"x-auth-token": sessionToken}})
           if(user.data.email) {
-            store.commit("setUser", user.data);
             //join main socket namespace
             const socket = io(socketUrl + '/user-'+user.data._id);
             Vue.use(VueSocketIOExt, socket, { store });
             defaultSocketEvents(socket, {store: store, context: 'mainSocket'});
             customSocketEvents(socket, MAIN_APP_CONTACT_HANDLER, store, { user: user.data, jwtKey: sessionToken })
             customSocketEvents(socket, MAIN_APP_MESSAGES, store)
+            store.commit("setUser", user.data);
             store.commit("setMainLoading", false);
             return;
           }
@@ -80,10 +94,21 @@ const init = () => {
 
       },
       watch: {
-        '$store.state.user': function(user) {
+        '$store.state.user': function(user, before) {
+          console.log(user, before);
           if(user) {
             
-            store.commit("setUser", user);
+            // store.commit("setUser", user);
+            if(!this.$socket){
+              //TODO MAKE FUNCTION OF THIS BLOCK
+              const socket = io(socketUrl + '/user-'+user._id);
+              const sessionToken = this.$cookies.get('jwt');
+              Vue.use(VueSocketIOExt, socket, { store });
+              defaultSocketEvents(socket, {store: store, context: 'mainSocket'});
+              customSocketEvents(socket, MAIN_APP_CONTACT_HANDLER, store, { user: user.data, jwtKey: sessionToken })
+              customSocketEvents(socket, MAIN_APP_MESSAGES, store)
+              //END BLOCK
+            }
             store.commit("setMainLoading", false);
             if(!store.getters.firstLoad) {
               router.push({ name: "Home" });
