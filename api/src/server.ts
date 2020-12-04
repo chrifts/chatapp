@@ -2,6 +2,9 @@ require("dotenv").config();
 import express = require('express');
 import cors = require('cors');
 import connectDB from './db';
+const fs = require('fs');
+
+
 connectDB();
 
 // const allowedOrigins = ['*', 'http://localhost:8080']; //MAIN APP CORS
@@ -23,8 +26,15 @@ app.use(cors())
 app.use(express.urlencoded({limit: "16mb", extended: true, parameterLimit:50000}));
 app.use(express.json({limit: "16mb"}));
 
-const http = require("http").Server(app);
-const io = require('socket.io')(http, {
+
+
+
+var sslCerts = {
+    key: fs.readFileSync('./certs/server-key.pem'),
+    cert: fs.readFileSync('./certs/server-cert.pem'),
+};
+const https = require("https").Server(sslCerts, app);
+const io = require('socket.io')(https, {
     cors: {
       origin: "*",
       methods: ["GET", "POST"],
@@ -37,8 +47,9 @@ require('./socket')(io);
 const api = require("./routes")(io);
 app.use("/api", api);
 
-http.listen(3000, function () {
+https.listen(3000, function () {
     console.log('App is listening on port 3000!');
 });
+
 
 export default app;
