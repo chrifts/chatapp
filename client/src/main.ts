@@ -16,6 +16,7 @@ dotenv.config();
 
 let app: any;
 const urlApi: string = process.env.NODE_ENV == 'development' ? process.env.VUE_APP_API! : process.env.VUE_APP_API_PROD!;
+const socketUrl: string = process.env.NODE_ENV == 'development' ? process.env.VUE_APP_SOCKET_URL! : process.env.VUE_APP_SOCKET_URL_PROD!;
 const init = () => {
   if (!app) {
     app = new Vue({
@@ -46,7 +47,7 @@ const init = () => {
           if(user.data.email) {
             store.commit("setUser", user.data);
             //join main socket namespace
-            const socket = io(process.env.VUE_APP_SOCKET_URL + '/user-'+user.data._id);
+            const socket = io(socketUrl + '/user-'+user.data._id);
             Vue.use(VueSocketIOExt, socket, { store });
             defaultSocketEvents(socket, {store: store, context: 'mainSocket'});
             customSocketEvents(socket, MAIN_APP_CONTACT_HANDLER, store, { user: user.data, jwtKey: sessionToken })

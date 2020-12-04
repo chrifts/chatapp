@@ -149,13 +149,13 @@ export default class Chat extends Vue {
 
   async connectSocket() {
     //get if exists or create chat room in db
-        
+        const socketUrl: string = process.env.NODE_ENV == 'development' ? process.env.VUE_APP_SOCKET_URL! : process.env.VUE_APP_SOCKET_URL_PROD!;
         const members = [this.mydata._id, this.chatSelected._id].sort();
         const res = await axiosRequest('POST', this.api + '/chat/get-or-create', {members: members}, {headers:{"x-auth-token":this.$cookies.get('jwt')}})
         if(res.data.chat._id) {
             this.chatRoom = res.data.chat._id;
             //join socket room
-            const socket = io(process.env.VUE_APP_SOCKET_URL+'/chat-'+this.chatRoom, {query: {members: members}});
+            const socket = io(socketUrl+'/chat-'+this.chatRoom, {query: {members: members}});
             this.socket = socket;
             this.socket.on('broadcast', (data)=>{
                 console.log(data)
