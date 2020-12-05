@@ -24,7 +24,8 @@ export default new Vuex.Store({
     allContacts: [{
       _id: String,
       status: String,
-      lastMessage: String,
+      lastMessage: {},
+      notifications: {},
     }],
     mainAppSocketStatus: 'connecting...'
   },
@@ -55,8 +56,10 @@ export default new Vuex.Store({
         return;
       }
       if(payload.notification) {
+        console.log(payload)
         const contacto = state.allContacts.filter(contact => contact._id == payload.from);
         const _cont = (contacto[0] as any)
+        console.log(_cont)
         if(state.mainNotifications[payload.type]) {
           state.mainNotifications[payload.type][_cont._id] ? null : state.mainNotifications[payload.type][_cont._id] = [];
           switch (payload.type) {
@@ -94,9 +97,11 @@ export default new Vuex.Store({
       }
     },
     updateContactLastMessage(state, payload) {
+      console.log(payload)
       state.allContacts.forEach((contact: any, index) => {
         if(contact._id == payload.to || contact._id == payload.from) {
-          state.allContacts[index].lastMessage = payload
+          console.log(payload)
+          state.allContacts[index].lastMessage = { message: payload.message, timestamp: payload.timestamp}
           state.allContacts = [...state.allContacts];
         }
       })
@@ -173,6 +178,7 @@ export default new Vuex.Store({
     async GET_CONTACTS({commit}, payload) {
       const urlApi: string = process.env.NODE_ENV == 'development' ? process.env.VUE_APP_API! : process.env.VUE_APP_API_PROD!;
       const res = await axiosRequest('POST', urlApi + '/user/get-contacts', {email: payload.user.email}, {headers: {"x-auth-token": payload.jwtKey}})
+      console.log(res.data.contacts)
       commit('SOCKET_setContacts', res.data.contacts)
     },
     SET_USER({commit}, payload) {
@@ -204,6 +210,16 @@ export default new Vuex.Store({
     }
   },
   getters: {
+    contactData: (state) => (_id) => {
+      console.log(state.allContacts)
+      const contacto = state.allContacts.filter(contact => contact._id == _id);
+      
+      (contacto[0] as any).notifications = {};
+      // (contacto[0] as any).lastMessage = {};
+      return contacto[0];
+      // return state.allContacts[_]
+    },
+    
     mainNotifs(state) {
       return state.mainNotifications;
     },

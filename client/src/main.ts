@@ -119,16 +119,16 @@ const init = () => {
             }
             
             store.commit("setMainLoading", false);
-            if(!store.getters.firstLoad) {
-              router.push({ name: "Home" });
-            }
+            // if(!store.getters.firstLoad) {
+            //   router.push({ name: "Home" });
+            // }
           } else {
             store.commit("setUser", null);
             store.commit("setMainLoading", false);
             router.push({ name: "Login" });
           }
           
-        }
+        }        
       },
       render: function (createElement) {
         return createElement('App');

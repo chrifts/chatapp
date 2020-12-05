@@ -82,6 +82,8 @@ export default class Login extends Vue {
         secure: false
       });      
       this.$store.dispatch('SET_USER', user.data.user);
+      
+      router.push({ name: "Home" });
       return;
     } catch (error) {
       alert(error);

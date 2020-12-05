@@ -70,7 +70,7 @@ import { axiosRequest } from '../helpers';
 interface NewMessage {
     timestamp: number,
     message: string,
-    from: string,
+    from: any,
     to: string
 }
 
@@ -128,15 +128,16 @@ export default class ChatFoot extends Vue {
         const myDataClean = this.mydata;
         myDataClean.contacts = null
         myDataClean.notifications = null
-        this.newMessage = {
+        const theNewMessage = {
             timestamp: messageTime,
             message: this.messageText,
-            from: myDataClean,
+            from: myDataClean as {},
             to: this.chatSelected._id
         }
+        console.log(theNewMessage)
         this.messageText = ''
-        this.$emit('myNewMsg', this.newMessage)
-        axiosRequest('POST', this.api + '/chat/post-message', {chatId: this.chatSelected.chatId, message: this.newMessage }, {headers:{"x-auth-token":this.$cookies.get('jwt')}})
+        this.$emit('myNewMsg', theNewMessage)
+        axiosRequest('POST', this.api + '/chat/post-message', {chatId: this.chatSelected.chatId, from: myDataClean, message: theNewMessage }, {headers:{"x-auth-token":this.$cookies.get('jwt')}})
         // eslint-disable-next-line
         theTextArea.innerText = '';
         return;

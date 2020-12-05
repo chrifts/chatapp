@@ -53,7 +53,7 @@ function postMessage(io: any) {
             if(chat) {
                 console.log(data)
                 let event = data.message;
-                event.from = data.message.from;
+                event.from = data.from._id;
                 console.log(event);
                 io.of('/chat-'+data.chatId).emit('NEW_MESSAGE', event)
                 const chat = await CM.findOne(
@@ -75,10 +75,11 @@ function postMessage(io: any) {
                     })
                     i++;
                 }
+                console.log(data);
                 const notification = {
                     _id: ObjectID(),
-                    extraDataFrom: data.message.from,
-                    from: {_id: JSON.parse(JSON.stringify(req.body.message.from))},
+                    extraDataFrom: data.from,
+                    from: data.from._id,
                     message: data.message.message,
                     timestamp: data.message.timestamp,
                     type: notificationType,
@@ -86,7 +87,7 @@ function postMessage(io: any) {
                     chatId: chat._id
                 };
                 console.log(notification);
-                await sendNotification(notification.from, data.message.to, {message: notification.message, timestamp: notification.timestamp, chatId: notification.chatId}, notificationType, io, 'MESSAGE_NOTIFICATION')                
+                await sendNotification(notification.extraDataFrom, data.message.to, {message: notification.message, timestamp: notification.timestamp, chatId: notification.chatId}, notificationType, io, 'MESSAGE_NOTIFICATION')                
                 // io.of('/user-'+notification.from._id).emit('MESSAGE_NOTIFICATION', notification)
                 delete chat.messages;
                 res.status(200).json({message: chat})

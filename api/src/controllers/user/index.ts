@@ -118,6 +118,7 @@ function GET_CONTACTS(io: any) {
                     },
                     
                 ).lean()
+                console.log(element)
                 if(contact) {
                     contact.status = element.status;
                     contact.lastMessage = element.lastMessage;

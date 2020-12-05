@@ -82,7 +82,7 @@
                         <v-list-item-title v-if="notifType == NEW_MESSAGE">{{ el.length }} {{el.length > 1 ? 'messages' : 'message'}} from </v-list-item-title>
                         <v-list-item-title v-if="notifType == CONTACT_REQUEST"> 
                           <!-- <span v-if="el[0].message.status == 'connecteds'"> accepted from</span> -->
-                          <!-- {{debugFromTempate(el)}} -->
+                          {{debugFromTempate(el)}}
                           <!-- {{el[0].message.status}} -->
                           {{parseNotificationType(el[0].message.status)}} 
                         </v-list-item-title>
@@ -161,6 +161,10 @@ export default class NavBar extends Vue {
   @Watch('$store.state.mainAppSocketStatus')
   onSocketStatusChange(ss: any) {
     this.mainSocketStatus = ss;
+  }
+
+  getContactData(_id){
+    return this.$store.getters.contactData(_id)
   }
 
   get itemsNoAuth() {
@@ -267,6 +271,7 @@ export default class NavBar extends Vue {
 
   @Watch('$store.state.mainNotifications', { deep : true, immediate: true })
   onMainNotificationsChange(val: any) {
+    console.log(val)
     let totalN = 0;
     Object.entries(val).forEach(([type, contacts])=> {
       if(Object.keys(contacts as {}).length > 0) {

@@ -49,15 +49,17 @@ export default class App extends Vue {
   }
 
   async appInit() {
+    console.log('APP INIT')
     this.appLoading = true;
     const sessionToken = this.$cookies.get('jwt'); 
     if(this.theUser.email){
       //set logged user
-      
+      console.log('ON IF')
       //get user contacts
       await this.$store.dispatch('GET_CONTACTS', { user: this.theUser, jwtKey: sessionToken })
       //save user data
-      
+      //NO RECARGO USER; ENTONCES NO TRAE LAS NUEVAS NOTIF HABIENDO ESTADO OFFLINE
+      this.$store.commit('updateNotifications', this.theUser)
       if(this.$store.getters.selectedChat) {
         const sc = this.$store.getters.selectedChat
         this.$store.commit('setSelectedChat', null)
@@ -70,9 +72,11 @@ export default class App extends Vue {
   }
 
   mounted(){
-    this.$root.$on('connectToMainSocket', ()=>{
+    this.$root.$on('connectToMainSocket', async ()=>{
       console.log('connectToMainSocket')
       if(this.$socket.client.disconnected) {
+        const user = await axiosRequest('POST', (this.$root as any).urlApi + '/get-user', {}, {headers: {"x-auth-token": this.$cookies.get('jwt')}})
+        this.$store.dispatch('SET_USER', user.data)
         this.$socket.client.connect()
       }
     })
@@ -88,6 +92,7 @@ export default class App extends Vue {
 
   @Watch('$store.state.mainAppSocketStatus' )
   onMainSocketChange(s: any) {
+    console.log('MAIN APP SOCKET :', s)
     if(s == 'connected' || s == 'reconnected') {
       this.appInit()
     }

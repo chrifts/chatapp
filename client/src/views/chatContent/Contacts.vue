@@ -219,6 +219,7 @@ export default class Contacts extends Vue {
 
   @Watch('$store.state.allContacts', { deep: true })
   onChangeContacts(val: any) {
+    console.log(val)
     const sorted = this.orderBy(val, 'lastMessage.timestamp', 'desc');
     this.contacts = sorted
     this.contactsLoading = false;
