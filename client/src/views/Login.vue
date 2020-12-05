@@ -80,19 +80,9 @@ export default class Login extends Vue {
       });
       this.$cookies.set('refreshToken', user.data.refreshToken, {
         secure: false
-      });
-            
-      const theUser = await axiosRequest('POST', (this.$root as any).urlApi + '/get-user', {}, {headers: {"x-auth-token": user.data.accessToken}})
-      
-      if(theUser.data.email) {
-          const fullUser = await axiosRequest('POST', (this.$root as any).urlApi + '/get-user', {getFull: true, email: theUser.data.email}, {headers: {"x-auth-token": user.data.accessToken}})
-          // this.$store.commit('setUser', fullUser.data);
-          
-          this.$store.dispatch('SET_USER', fullUser.data);
-          return;
-      } else {
-        throw new Error('Error: Login.vue > response data is false')
-      }
+      });      
+      this.$store.dispatch('SET_USER', user.data.user);
+      return;
     } catch (error) {
       alert(error);
       throw new Error(error);

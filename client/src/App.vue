@@ -17,11 +17,8 @@ import Vue from "vue";
 import { Watch } from "vue-property-decorator";
 import Component from "vue-class-component";
 import NavBar from "@/components/NavBar.vue";
-// import VueSocketIOExt, { Socket } from 'vue-socket.io-extended'
-// import { io } from 'socket.io-client';
 import { axiosRequest } from './helpers';
 import store from './store/index'
-// import { MAIN_APP_CONTACT_HANDLER, MAIN_APP_MESSAGES } from './constants';
 
 @Component({
   components: {
@@ -54,21 +51,19 @@ export default class App extends Vue {
   async appInit() {
     this.appLoading = true;
     const sessionToken = this.$cookies.get('jwt'); 
-    const user = await axiosRequest('POST', (this.$root as any).urlApi + '/get-user', {}, {headers: {"x-auth-token": sessionToken}})
-    if(user.data.email){
+    if(this.theUser.email){
       //set logged user
-      const fullUser = await axiosRequest('POST', (this.$root as any).urlApi + '/get-user', {getFull: true, email: user.data.email}, {headers: {"x-auth-token": sessionToken}})      
-      this.theUser = fullUser.data;
+      
       //get user contacts
-      await this.$store.dispatch('GET_CONTACTS', { user: fullUser.data, jwtKey: sessionToken })
+      await this.$store.dispatch('GET_CONTACTS', { user: this.theUser, jwtKey: sessionToken })
       //save user data
-      this.$store.dispatch('SET_USER', fullUser.data);
+      
       if(this.$store.getters.selectedChat) {
         const sc = this.$store.getters.selectedChat
         this.$store.commit('setSelectedChat', null)
         this.$store.commit('setSelectedChat', sc);
       } 
-      console.log(this)
+      
       this.appLoading = false;
       //listen socket events
     }

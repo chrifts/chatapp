@@ -48,6 +48,7 @@ export default class ChatList extends Vue {
 
     @Watch('message')
     onNewMessage(msg: any) {
+        console.log(msg)
         this.messages.push(msg)
     }
     scrollOpts = {

@@ -39,7 +39,7 @@ exports.login = async (req, res) => {
         let accessToken = await user.createAccessToken();
         let refreshToken = await user.createRefreshToken();
         console.log('ASD')
-        return res.status(201).json({ accessToken, refreshToken });
+        return res.status(201).json({ accessToken, refreshToken, user });
       } else {
         //send error if password is invalid
         return res.status(401).json({ error: "Invalid password!" });

@@ -16,7 +16,7 @@ const notif: Notifications = { };
 export default new Vuex.Store({
   state: {
     firstLoad: false,
-    user: {},
+    user: null,
     status: null,
     selectedChat: null,
     mainLoading: false,
@@ -155,8 +155,8 @@ export default new Vuex.Store({
       }
     },
     setUser(state, payload) {
+      console.log(payload);
       state.user = payload;
-      // state.user = {... state.user}
     },
     setStatus(state, payload) {
       state.status = payload;
@@ -178,6 +178,7 @@ export default new Vuex.Store({
     SET_USER({commit}, payload) {
       
       commit('setUser', payload)
+      console.log(payload)
       if(payload.notifications) {
         this.dispatch('UPDATE_NOTIF', payload)
       }

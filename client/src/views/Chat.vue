@@ -54,43 +54,12 @@
             :message="newMessage ? newMessage : null"
           />
           <ChatFoot v-if="chatSelected && mainSocketStatus == 'connected'" 
-            :chatWindowProp="chatWindow" 
+            :chatWindowProp="chatWindow"
+            @myNewMsg="myNewMsg" 
           />
         </div>
       </v-col>
     </div>
-    <!-- MOBILE -->
-    <!-- <div class="main-content-mobile" v-else>
-      <Contacts @chatSelected="focusChat" v-if="!chatSelected" />
-      <v-col cols="12" v-if="chatSelected" style="padding: 0 !important">
-        <div class="chat-main-view">
-          
-          <div class="header-block" v-if="chatSelected">
-            <v-row>
-              <v-col cols=2>
-                <v-btn outlined elevation="1" color="white" icon @click="unsetSelectedChat()"> 
-                  <v-icon color="white">
-                    mdi-chevron-left
-                  </v-icon> 
-                </v-btn>
-              </v-col>
-              <v-col cols=10>
-                <h3 class="text-left mt-1">{{ chatSelected.profile.name + ' ' + chatSelected.profile.lastName  }}</h3>
-              </v-col>
-            </v-row>
-            
-            
-          </div>
-          <ChatList v-if="chatSelected" 
-            :chatWindowProp="chatWindow"
-            :message="newMessage ? newMessage : null"
-          />
-          <ChatFoot v-if="chatSelected"
-            :chatWindowProp="chatWindow" 
-          />
-        </div>
-      </v-col>
-    </div> -->
   </v-container>
 </template>
 
@@ -153,25 +122,37 @@ export default class Chat extends Vue {
         const members = [this.mydata._id, this.chatSelected._id].sort();
         const res = await axiosRequest('POST', this.api + '/chat/get-or-create', {members: members}, {headers:{"x-auth-token":this.$cookies.get('jwt')}})
         if(res.data.chat._id) {
-            this.chatRoom = res.data.chat._id;
-            //join socket room
-            const socket = io(socketUrl+'/chat-'+this.chatRoom, {query: {members: members}});
-            this.socket = socket;
-            this.socket.on('broadcast', (data)=>{
-                console.log(data)
-            })
-            this.socket.on('reconnect', async ()=>{
-              const res = await axiosRequest('POST', this.api + '/chat/get-or-create', {members: members}, {headers:{"x-auth-token":this.$cookies.get('jwt')}})
-              if(res.data.chat._id) {
-                this.chatRoom = res.data.chat._id;
-              }
-            })
-            this.socket.on('NEW_MESSAGE', (msg)=>{
-                this.newMessage = msg
-            })
-            defaultSocketEvents(this.socket, {context: 'selectedChat'});
-            //DOCS: https://socket.io/docs/v3/client-api/index.html
+          this.chatRoom = res.data.chat._id;
+          //join socket room
+          const socket = io(socketUrl+'/chat-'+this.chatRoom, {query: {members: members}});
+          this.socket = socket;
+          this.socket.on('broadcast', (data)=>{
+              console.log(data)
+          })
+          this.socket.on('reconnect', async ()=>{
+            const res = await axiosRequest('POST', this.api + '/chat/get-or-create', {members: members}, {headers:{"x-auth-token":this.$cookies.get('jwt')}})
+            if(res.data.chat._id) {
+              this.chatRoom = res.data.chat._id;
+            }
+          })
+          this.socket.on('NEW_MESSAGE', (msg)=>{
+            console.log(msg)
+            if(msg.from != this.mydata._id) {
+              this.newMessage = msg
+            }
+          })
+
+          defaultSocketEvents(this.socket, {context: 'selectedChat'});
+          //DOCS: https://socket.io/docs/v3/client-api/index.html
         }
+  }
+
+  myNewMsg(msg) {
+    
+    msg.from = msg.from._id
+    if(msg.from == this.mydata._id) {
+      this.newMessage = msg
+    }
   }
 
   async focusChat(contact: any) {

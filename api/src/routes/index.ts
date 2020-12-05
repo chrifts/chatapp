@@ -19,21 +19,11 @@ module.exports = function(io: any) {
     router.post("/auth/logout", AuthController.logout);
 
     router.post('/get-user', Middleware.checkAuth, async function (req, res) {
-        if(req.body.getFull) {
-            console.log('entro');
-            let fullUser = await UserModel.findOne({ email: req.body.email }).lean();
-            console.log(fullUser);
-            if(fullUser) {
-                delete fullUser.password;
-            }
-            res.status(200).send(fullUser);
-            return;
+        let fullUser = await UserModel.findOne({ email: req.user.email }).lean();
+        if(fullUser) {
+            delete fullUser.password;
         }
-        if(req.user.email) {
-            return res.status(200).json(req.user);
-        } else {
-            return res.status(200).json(req.user.user);
-        }
+        res.status(200).send(fullUser);
     }); 
 
     router.post("/user/add-contact", Middleware.checkAuth, ADD_CONTACT(io));    

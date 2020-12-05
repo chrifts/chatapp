@@ -52,7 +52,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  
+  console.log(store.getters.user)
   if (store.getters.user == null) {
     to.name == "Register" || to.name == "Login"
       ? next()

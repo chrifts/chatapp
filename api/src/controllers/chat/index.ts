@@ -36,8 +36,9 @@ const getOrCreate = async (req, res) => {
 function postMessage(io: any) {
     const notificationType = NEW_MESSAGE;
     const callback = async (req, res) => {
+        console.log(req.body)
         const data = JSON.parse(JSON.stringify(req.body))
-        
+        console.log(data);
         try {
             const chat = await CM.findOneAndUpdate(
                 {
@@ -50,8 +51,10 @@ function postMessage(io: any) {
                 }
             )
             if(chat) {
-                const event = data.message;
-                event.from = data.message.from._id;
+                console.log(data)
+                let event = data.message;
+                event.from = data.message.from;
+                console.log(event);
                 io.of('/chat-'+data.chatId).emit('NEW_MESSAGE', event)
                 const chat = await CM.findOne(
                     {
@@ -75,16 +78,17 @@ function postMessage(io: any) {
                 const notification = {
                     _id: ObjectID(),
                     extraDataFrom: data.message.from,
-                    from: JSON.parse(JSON.stringify(req.body.message.from)),
+                    from: {_id: JSON.parse(JSON.stringify(req.body.message.from))},
                     message: data.message.message,
                     timestamp: data.message.timestamp,
                     type: notificationType,
                     to: data.message.to,
                     chatId: chat._id
                 };
-                
+                console.log(notification);
                 await sendNotification(notification.from, data.message.to, {message: notification.message, timestamp: notification.timestamp, chatId: notification.chatId}, notificationType, io, 'MESSAGE_NOTIFICATION')                
-                io.of('/user-'+notification.from._id).emit('MESSAGE_NOTIFICATION', notification)
+                // io.of('/user-'+notification.from._id).emit('MESSAGE_NOTIFICATION', notification)
+                delete chat.messages;
                 res.status(200).json({message: chat})
             }
         } catch (error) {
