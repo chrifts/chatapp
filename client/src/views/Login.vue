@@ -86,6 +86,7 @@ export default class Login extends Vue {
       router.push({ name: "Home" });
       return;
     } catch (error) {
+      alert('in login')
       alert(error);
       throw new Error(error);
     }
