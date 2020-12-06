@@ -74,7 +74,7 @@ export default class Login extends Vue {
         email: this.email,
         password: this.password
       })
-      alert(user.data.accessToken)
+      console.log(user);
     try {
       const user = await axiosRequest('POST', (this.$root as any).urlApi + '/auth/login', {
         email: this.email,
