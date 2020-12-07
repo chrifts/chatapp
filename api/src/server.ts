@@ -1,14 +1,10 @@
-require("dotenv").config();
+import "dotenv/config"
 import express = require('express');
 import cors = require('cors');
 import connectDB from './db';
 const fs = require('fs');
-
-
 connectDB();
-
 // const allowedOrigins = ['*', 'http://localhost:8080']; //MAIN APP CORS
-
 // Create a new express app instance
 const app: express.Application = express();
 // app.use(cors({
@@ -32,8 +28,6 @@ var httpsCerts = {
   ca: fs.readFileSync(certsPath+'/chain.pem')
 };
 const https = require("https").Server(httpsCerts, app);
-
-// const https = require("https").Server(sslCerts, app);
 const http = require("http").Server(app);
 const io = require('socket.io')(process.env.NODE_ENV == 'development' ? http : https, {
     cors: {
