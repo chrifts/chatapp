@@ -25,7 +25,7 @@ app.use(express.json({limit: "16mb"}));
 let web;
 
 if(process.env.NODE_ENV == 'production') {
-  var certsPath = process.env.SLL_CERTS_PATH;
+  var certsPath = process.env.SSL_CERT_PATH;
   var httpsCerts = {
     key: fs.readFileSync(certsPath+'/privkey.pem'),
     cert: fs.readFileSync(certsPath+'/cert.pem'),
