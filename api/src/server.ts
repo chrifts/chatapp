@@ -21,15 +21,23 @@ const app: express.Application = express();
 app.use(cors())
 app.use(express.urlencoded({limit: "16mb", extended: true, parameterLimit:50000}));
 app.use(express.json({limit: "16mb"}));
-var certsPath = '/etc/letsencrypt/live/web.chatlyapp.xyz';
-var httpsCerts = {
-  key: fs.readFileSync(certsPath+'/privkey.pem'),
-  cert: fs.readFileSync(certsPath+'/cert.pem'),
-  ca: fs.readFileSync(certsPath+'/chain.pem')
-};
-const https = require("https").Server(httpsCerts, app);
-const http = require("http").Server(app);
-const io = require('socket.io')(process.env.NODE_ENV == 'development' ? http : https, {
+
+let web;
+
+if(process.env.NODE_ENV == 'production') {
+  var certsPath = process.env.SLL_CERTS_PATH;
+  var httpsCerts = {
+    key: fs.readFileSync(certsPath+'/privkey.pem'),
+    cert: fs.readFileSync(certsPath+'/cert.pem'),
+    ca: fs.readFileSync(certsPath+'/chain.pem')
+  };
+  web = require("https").Server(httpsCerts, app);
+} else {
+  web = require("http").Server(app);
+}
+
+
+const io = require('socket.io')(web, {
     cors: {
       origin: "*",
       methods: ["GET", "POST"],
@@ -44,11 +52,11 @@ app.use("/api", api);
 
 
 if(process.env.NODE_ENV == 'development') {
-  http.listen(3000, '192.168.178.31', function () {
+  web.listen(3000, '192.168.178.31', function () {
     console.log('App is listening on port 3000!');
   });
 } else {
-  https.listen(3000, function () {
+  web.listen(3000, function () {
     console.log('App is listening on port 3000!');
   });
 }
