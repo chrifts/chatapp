@@ -135,9 +135,9 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
-import { axiosRequest, emailRegex } from '@/helpers/index'
+import { axiosRequest, emailRegex } from '../../helpers'
 import { Socket } from 'vue-socket.io-extended'
-import { CONTACT_REQUEST, NEW_MESSAGE } from "@/constants";
+import { CONTACT_REQUEST, NEW_MESSAGE } from "../../constants";
 import _ from 'lodash';
 
 @Component

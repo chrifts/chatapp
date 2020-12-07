@@ -70,7 +70,7 @@ import Contacts from "./chatContent/Contacts.vue";
 import ChatList from "./ChatList.vue";
 import ChatFoot from "./ChatFoot.vue";
 import VueScrollTo from 'vue-scrollto';
-import store from '@/store/index'
+import store from '../store/index'
 import { axiosRequest, defaultSocketEvents } from '../helpers';
 import { io } from 'socket.io-client';
 Vue.use(VueScrollTo)

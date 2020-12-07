@@ -72,8 +72,8 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import { Watch } from 'vue-property-decorator';
-import store from '@/store/index'
-import { axiosRequest } from '@/helpers/index'
+import store from '../store/index'
+import { axiosRequest } from '../helpers/index'
 import router from '../router';
 
 @Component({})

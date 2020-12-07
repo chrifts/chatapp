@@ -45,9 +45,9 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import { Watch } from 'vue-property-decorator';
-import { axiosRequest } from '@/helpers/index'
+import { axiosRequest } from '../helpers/index'
 import router from "../router";
-import store from '@/store/index'
+import store from '../store/index'
 
 @Component({})
 export default class Login extends Vue {
@@ -70,11 +70,6 @@ export default class Login extends Vue {
 
   async loginUser() {
     store.commit("setMainLoading", true);
-    const user = await axiosRequest('POST', (this.$root as any).urlApi + '/auth/login', {
-        email: this.email,
-        password: this.password
-      })
-      console.log(user);
     try {
       const user = await axiosRequest('POST', (this.$root as any).urlApi + '/auth/login', {
         email: this.email,

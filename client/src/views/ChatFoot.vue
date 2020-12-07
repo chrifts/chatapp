@@ -64,7 +64,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Watch, Prop } from "vue-property-decorator";
-import store from '@/store/index';
+import store from '../store/index';
 import { axiosRequest } from '../helpers';
 
 interface NewMessage {
