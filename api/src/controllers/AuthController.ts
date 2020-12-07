@@ -38,7 +38,6 @@ exports.login = async (req, res) => {
         //generate a pair of tokens if valid and send
         let accessToken = await user.createAccessToken();
         let refreshToken = await user.createRefreshToken();
-        console.log('ASD')
         return res.status(201).json({ accessToken, refreshToken, user });
       } else {
         //send error if password is invalid
