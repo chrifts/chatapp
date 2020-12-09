@@ -125,9 +125,9 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import store from '@/store/index'
+import store from '../store/index'
 import { Watch, Prop, Model } from 'vue-property-decorator';
-import { CONTACT_REQUEST, NEW_MESSAGE } from "@/constants";
+import { CONTACT_REQUEST, NEW_MESSAGE } from "../constants";
 import { axiosRequest } from '../helpers';
 import SwitchSocket from '@/components/SwitchSocket.vue'
 
@@ -161,10 +161,6 @@ export default class NavBar extends Vue {
   @Watch('$store.state.mainAppSocketStatus')
   onSocketStatusChange(ss: any) {
     this.mainSocketStatus = ss;
-  }
-
-  getContactData(_id){
-    return this.$store.getters.contactData(_id)
   }
 
   get itemsNoAuth() {

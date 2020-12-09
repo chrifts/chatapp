@@ -1,9 +1,10 @@
-import "dotenv/config"
+require('dotenv').config();
 import express = require('express');
 import cors = require('cors');
 import connectDB from './db';
 const fs = require('fs');
 connectDB();
+
 // const allowedOrigins = ['*', 'http://localhost:8080']; //MAIN APP CORS
 // Create a new express app instance
 const app: express.Application = express();
