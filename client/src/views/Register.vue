@@ -76,7 +76,9 @@ import store from '../store/index'
 import { axiosRequest } from '../helpers/index'
 import router from '../router';
 
-@Component({})
+@Component({
+  name: 'Register',
+})
 export default class Register extends Vue {
   
   loading = this.$store.getters.mainLoading;

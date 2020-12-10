@@ -308,19 +308,25 @@ function HANDLE_CONTACT_REQUEST(io: any) {
 }
 
 function READ_NOTIFICATIONS() {
+
     const callback = async (req, res) => {
-        const notifications = req.body.notifications;
-        Object.entries(notifications).forEach(([ix, el])=>{
-            Object.entries(el).forEach(([i, e])=>{ 
-                e.forEach(notf => {
-                    notf.status = 'read'
-                });
+        try {        
+            const notifications = req.body.notifications;
+            Object.entries(notifications).forEach(([ix, el])=>{
+                Object.entries(el).forEach(([i, e])=>{ 
+                    e.forEach(notf => {
+                        notf.status = 'read'
+                    });
+                })
             })
-        })
-        console.log(req.user)
-        await UM.updateOne({_id: req.user._id}, {$set: {notifications: notifications}}).exec()
-        console.log(notifications);
-        res.json({data:'ok'})
+            console.log(req.user)
+            await UM.updateOne({_id: req.user._id}, {$set: {notifications: notifications}}).exec()
+            console.log(notifications);
+            res.status(200).json({data:'ok'})
+        } catch (error) {
+            res.status(500).json({error: 'error reading notifications'})
+            throw new Error(error)
+        }
     }
     return callback;
 }

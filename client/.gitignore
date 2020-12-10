@@ -4,6 +4,7 @@ dist
 
 # local env files
 .env
+deploy.sh
 .env.development
 .env.production
 .env.local

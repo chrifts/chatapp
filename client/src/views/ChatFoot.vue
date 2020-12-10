@@ -74,7 +74,9 @@ interface NewMessage {
     to: string
 }
 
-@Component
+@Component({
+    name: 'ChatFoot',
+})
 export default class ChatFoot extends Vue {    
     inputFocused = false;
     chatWindow: boolean;
@@ -136,8 +138,9 @@ export default class ChatFoot extends Vue {
         }
         console.log(theNewMessage)
         this.messageText = ''
-        this.$emit('myNewMsg', theNewMessage)
-        axiosRequest('POST', this.api + '/chat/post-message', {chatId: this.chatSelected.chatId, from: myDataClean, message: theNewMessage }, {headers:{"x-auth-token":this.$cookies.get('jwt')}})
+        this.$emit('myNewMsg', {chatId: this.chatSelected.chatId, from: myDataClean, message: theNewMessage })
+        store.commit('updateContactLastMessage', {to: this.chatSelected._id, message: theNewMessage.message, timestamp: theNewMessage.timestamp})
+        //axiosRequest('POST', this.api + '/chat/post-message', {chatId: this.chatSelected.chatId, from: myDataClean, message: theNewMessage }, {headers:{"x-auth-token":this.$cookies.get('jwt')}})
         // eslint-disable-next-line
         theTextArea.innerText = '';
         return;

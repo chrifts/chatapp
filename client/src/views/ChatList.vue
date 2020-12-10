@@ -39,7 +39,9 @@ import { io } from 'socket.io-client';
 Vue.use(VueScrollTo)
 Vue.component('ResizeSensor', ResizeSensor)
 
-@Component
+@Component({
+    name: 'ChatList',
+})
 export default class ChatList extends Vue {
 
     @Prop() chatWindowProp: any;
@@ -49,6 +51,7 @@ export default class ChatList extends Vue {
     @Watch('message')
     onNewMessage(msg: any) {
         console.log(msg)
+       
         this.messages.push(msg)
     }
     scrollOpts = {
@@ -104,6 +107,7 @@ export default class ChatList extends Vue {
         if(selectedChat && selectedChat._id) {
             theContact = {_id: selectedChat._id}
             const res = await axiosRequest('POST', this.api + '/chat/get-messages', {chatId: selectedChat.chatId, contact: theContact}, {headers: {"x-auth-token": this.$cookies.get('jwt')}})
+            console.log(res.data.messages)
             this.messages = res.data.messages   
         }
     }

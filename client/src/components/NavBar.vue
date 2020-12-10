@@ -1,115 +1,108 @@
 <template>
   <div>
     <!-- DESKTOP -->
-    <v-toolbar color="primary" :class="{'v-bottom-navigation v-item-group theme--light' : $vuetify.breakpoint.mobile, 'd-none' : chatSelected && $vuetify.breakpoint.mobile }">
-      <v-toolbar-title v-if="!$vuetify.breakpoint.mobile">
-        <v-btn color="white" text :to="'/'">
+    <v-bottom-navigation 
+      :background-color="color"
+      :class="{'d-none' : chatSelected && $vuetify.breakpoint.mobile }" class="mainNav">
+      <template v-if="loggedIn && !loading && !$vuetify.breakpoint.mobile">
+        <v-btn  color="white" text :to="'/'">
           {{appName}}
         </v-btn>
         <v-badge
+          class="dotPosition"
           inline
           dot
-          v-if="loggedIn && !loading"
           :color="mainSocketStatus == 'connected' ? 'green' : 'red'"
         >
-          <span class="text-subtitle-1 text--disabled" title='Main socket status'>
+          <span  class="text-subtitle-1 text--disabled" title='Main socket status'>
             {{mainSocketStatus}}  
           </span>
         </v-badge>
-        
-        
-      </v-toolbar-title>
-      <v-toolbar-items >
-        <SwitchSocket/>
-      </v-toolbar-items>
+      </template>  
+      <SwitchSocket v-if="loggedIn"/>
       <v-spacer v-if="!$vuetify.breakpoint.mobile"></v-spacer>
-      
-        <v-toolbar-items v-if="!loggedIn && !loading">
-          <v-btn
-            color="white"
-            text
-            v-for="item in itemsNoAuth"
-            :key="item.title"
-            :to="item.link"
-          >
-            {{ item.title }}
-            <v-icon right color="white">{{ item.icon }}</v-icon>
-          </v-btn>
-          <v-spacer></v-spacer>
-        </v-toolbar-items>
+      <template v-if="!loggedIn && !loading" class="v-bottom-navigation">
+        <v-btn
+          color="white"
+          text
+          v-for="item in itemsNoAuth"
+          :key="item.title"
+          :to="item.link"
+        >
+          {{ item.title }}
+          <v-icon center color="white">{{ item.icon }}</v-icon>
+        </v-btn>
+      </template>
 
-        <v-toolbar-items v-if="loggedIn && !loading" >
+      <template v-if="loggedIn && !loading"  class="v-bottom-navigation">
 
-          <v-menu offset-y
-            v-model="isOpen"
+        <v-menu offset-y
+          v-model="isOpen"
           >
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                color="white"
-                icon
-                v-bind="attrs"
-                v-on="on"
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="white"
+              icon
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-badge
+                color="red"
+                overlap
+                :content="totalNotifications"
+                :value="hasNotifications"
               >
-                <v-badge
-                  color="red"
-                  overlap
-                  :content="totalNotifications"
-                  :value="hasNotifications"
-                >
-                  
-                  <v-icon>mdi-bell</v-icon>
-                </v-badge>
-              </v-btn>
+                
+                <v-icon>mdi-bell</v-icon>
+              </v-badge>
+            </v-btn>
+            
+          </template>
+          <v-list class="not-list" v-if="Object.keys(mainNotifications).length > 0">
+            <!-- loop notification type -->
+            <v-list-item
+              v-for="(data, notifType) in mainNotifications"
+              :key="notifType"
+              :class="{'d-none': Object.keys(data).length < 1}"
+            >
               
-            </template>
-            <v-list class="not-list" v-if="Object.keys(mainNotifications).length > 0">
-              <!-- loop notification type -->
-              <v-list-item
-                v-for="(data, notifType) in mainNotifications"
-                :key="notifType"
-                :class="{'d-none': Object.keys(data).length < 1}"
-              >
+                <!-- <span>{{parseNotificationType(notifType)}}</span> -->
                 
-                  <!-- <span>{{parseNotificationType(notifType)}}</span> -->
-                  
-                  <v-list class="not-list">
-                    <!-- Loop users -->
-                    <v-list-item
-                      v-for="(el, ix) in data"
-                      :key="ix"
-                    >
-                      <div v-if="el.length > 0" :class="{'unread' : el[0].status == 'unread'}">
-                        <v-list-item-title v-if="notifType == NEW_MESSAGE">{{ el.length }} {{el.length > 1 ? 'messages' : 'message'}} from </v-list-item-title>
-                        <v-list-item-title v-if="notifType == CONTACT_REQUEST"> 
-                          <!-- <span v-if="el[0].message.status == 'connecteds'"> accepted from</span> -->
-                          {{debugFromTempate(el)}}
-                          <!-- {{el[0].message.status}} -->
-                          {{parseNotificationType(el[0].message.status)}} 
-                        </v-list-item-title>
-                        <v-list-item-subtitle>{{ el[0].extraDataFrom.email }}</v-list-item-subtitle>  
-                      </div> 
-                    </v-list-item>
-                  </v-list>
-                
-                
-              </v-list-item>
-            </v-list>
-          </v-menu>
-          
-          <v-btn color="white" text v-for="item in itemsAuth" :key="item.title" :to="item.link">
-            {{ item.title }}
-            <v-icon right color="white">{{ item.icon }}</v-icon>
-          </v-btn>
-          <v-spacer v-if="!$vuetify.breakpoint.mobile"></v-spacer>
-
-          <v-btn text color="white" @click="logout">
-            Logout
-            <v-icon color="white" right>exit_to_app</v-icon>
-          </v-btn>
-        </v-toolbar-items>
-    
-      
-    </v-toolbar>
+                <v-list class="not-list">
+                  <!-- Loop users -->
+                  <v-list-item
+                    v-for="(el, ix) in data"
+                    :key="ix"
+                  >
+                    <div v-if="el.length > 0" :class="{'unread' : el[0].status == 'unread'}">
+                      <v-list-item-title v-if="notifType == NEW_MESSAGE">{{ el.length }} {{el.length > 1 ? 'messages' : 'message'}} from </v-list-item-title>
+                      <v-list-item-title v-if="notifType == CONTACT_REQUEST"> 
+                        <!-- <span v-if="el[0].message.status == 'connecteds'"> accepted from</span> -->
+                        <!-- {{debugFromTempate(el)}} -->
+                        <!-- {{el[0].message.status}} -->
+                        {{parseNotificationType(el[0].message.status)}} 
+                      </v-list-item-title>
+                      <v-list-item-subtitle>{{ el[0].extraDataFrom.email }}</v-list-item-subtitle>  
+                    </div> 
+                  </v-list-item>
+                </v-list>
+              
+              
+            </v-list-item>
+          </v-list>
+        </v-menu>
+        
+        <v-btn color="white" text v-for="item in itemsAuth" :key="item.title" :to="item.link">
+          {{ item.title }}
+          <v-icon center color="white">{{ item.icon }}</v-icon>
+        </v-btn>
+        
+        <v-btn text color="white" @click="logout" v-if="!$vuetify.breakpoint.mobile">
+          Logout
+          <v-icon color="white" center>exit_to_app</v-icon>
+        </v-btn>
+      </template>  
+    </v-bottom-navigation>
     <div v-if="mainLoading">
       <v-progress-linear
         height="8"
@@ -132,6 +125,7 @@ import { axiosRequest } from '../helpers';
 import SwitchSocket from '@/components/SwitchSocket.vue'
 
 @Component({
+  name: 'NavBar',
   components: {
     SwitchSocket,
   }
@@ -139,6 +133,7 @@ import SwitchSocket from '@/components/SwitchSocket.vue'
 export default class NavBar extends Vue {
   @Model('change') socketStatus!: string;
   
+  color = (this as any).$vuetify.theme.themes.light.primary;
   NEW_MESSAGE = NEW_MESSAGE;
   CONTACT_REQUEST = CONTACT_REQUEST;
   isOpen = false;
@@ -222,18 +217,26 @@ export default class NavBar extends Vue {
   }
 
   async readNotifications(data) {
+    const currentNotifications = this.totalNotifications;
     if(this.totalNotifications > 0) {
-      
-      await axiosRequest('POST', (this.$root as any).urlApi + '/user/read-notifications', {notifications: data}, {headers:{"x-auth-token":this.$cookies.get('jwt')}})
-      this.$store.commit('readNotifications', data)
       this.hasNotifications = false;
       this.totalNotifications = 0;
+      const res = await axiosRequest('POST', (this.$root as any).urlApi + '/user/read-notifications', {notifications: data}, {headers:{"x-auth-token":this.$cookies.get('jwt')}})
+      if(res.status == 500) {
+        this.hasNotifications = true;
+        this.totalNotifications = currentNotifications;
+      } else {
+        this.$store.commit('readNotifications', data)
+      }      
     }
   }
 
   parseNotificationType(data) {
     let type;
     switch (data) {
+      case 'new contact from':
+        type = 'New contact request from'
+        break;
       case 'resend':
         type = 'User has resend contact request'
         break;
@@ -248,7 +251,6 @@ export default class NavBar extends Vue {
     }
     return type;
   }
-
 
   public logout() {
     axiosRequest('POST', (this.$root as any).urlApi + '/auth/logout', {refreshToken: this.$cookies.get('refreshToken')} )
@@ -267,7 +269,7 @@ export default class NavBar extends Vue {
 
   @Watch('$store.state.mainNotifications', { deep : true, immediate: true })
   onMainNotificationsChange(val: any) {
-    console.log(val)
+    
     let totalN = 0;
     Object.entries(val).forEach(([type, contacts])=> {
       if(Object.keys(contacts as {}).length > 0) {
@@ -297,7 +299,6 @@ export default class NavBar extends Vue {
   }
   @Watch('$store.state.selectedChat')
   onChangeChat(val: any) {
-    console.log(val);
     this.chatSelected = val;
     if(val && val._id){
       this.$store.commit('readChat', val._id);
@@ -307,14 +308,20 @@ export default class NavBar extends Vue {
 }
 </script>
 <style lang="scss">
-  .v-badge--dot .v-badge__badge {
-    margin-bottom: 3px !important;
-  }
+.dotPosition .v-badge__wrapper span {
+  position: relative;
+  top: 19px !important;
+  margin: 0 5px;
+}
   .not-list {
     width: 100%;
   }
 </style>
 <style lang="scss" scoped>
+
+.mainNav {
+  background-color: var(--primary);
+}
 .unread {
   background-color: #cbcbcb;
   border-radius: 5px;
@@ -322,7 +329,7 @@ export default class NavBar extends Vue {
 }
 @media (max-width: 599px) {
   .v-toolbar__content, .v-toolbar__extension, .v-toolbar__items {
-    width: 100%;
+    width: 100% !important;
   }
   .v-item-group.v-bottom-navigation .v-btn {
     min-width: 60px !important;
@@ -335,13 +342,13 @@ export default class NavBar extends Vue {
     width: 100%;
     left: 0 !important;
     top: 0 !important;
-    height: calc(100% - 57px);
-    border: none;
+    height: calc(100% - 57px) !important;
+    border: none !important;
     border-radius: 0 !important;
-    box-shadow: none;
+    box-shadow: none !important;
   }
-  .v-list-item {
-    display: block;
-  }
+  // .v-list-item {
+  //   display: block !important;
+  // }
 }
 </style>

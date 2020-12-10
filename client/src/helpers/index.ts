@@ -46,9 +46,8 @@ function defaultSocketEvents (socket: any, opts?: {context?: string, store?: any
     // ping	                Fired when a ping is sent to the server
     // pong	                Fired when a pong is received from the server
     let socketStatus = '';
-    console.log(socket);
     socket.on('connect', ()=>{
-        console.log('connected', socket)
+        // console.log('connected', socket)
         if(opts?.context == 'mainSocket' ) {
             socketStatus = 'connected';
             opts?.store.commit('setMainAppSocketStatus', socketStatus)
@@ -69,7 +68,7 @@ function defaultSocketEvents (socket: any, opts?: {context?: string, store?: any
         }
     })
     socket.on('disconnect', (res)=>{
-        console.log('disconnected: ', res, socket)
+        // console.log('disconnected: ', res, socket)
         if(opts?.context == 'mainSocket' ) {
             socketStatus = 'disconnected';
             opts?.store.commit('setMainAppSocketStatus', socketStatus)
@@ -128,7 +127,6 @@ function customSocketEvents(socket: any,  context: string, store: any, auth?: {}
         });
 
         socket.on('CONTACT_REQUEST', async (payload) => {
-            console.log(payload)
             if(payload.message.sentByRejector) {
                 store.commit('updateContactStatus', {payload: payload, event:'RESEND_BY_REJECTOR'})
             } else {

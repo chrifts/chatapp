@@ -21,6 +21,7 @@ import { axiosRequest } from './helpers';
 import store from './store/index'
 
 @Component({
+  name: 'App',
   components: {
     NavBar
   }
@@ -43,7 +44,6 @@ export default class App extends Vue {
   @Watch('$store.state.firstLoad') 
   onFristLoadChanged(init: any) {
     if(init) {
-      console.log(this.$store.state)
       this.appInit()
     }
   }
@@ -53,8 +53,6 @@ export default class App extends Vue {
     this.appLoading = true;
     const sessionToken = this.$cookies.get('jwt'); 
     if(this.theUser.email){
-      //set logged user
-      console.log('ON IF')
       //get user contacts
       await this.$store.dispatch('GET_CONTACTS', { user: this.theUser, jwtKey: sessionToken })
       //save user data
@@ -92,7 +90,6 @@ export default class App extends Vue {
 
   @Watch('$store.state.mainAppSocketStatus' )
   onMainSocketChange(s: any) {
-    console.log('MAIN APP SOCKET :', s)
     if(s == 'connected' || s == 'reconnected') {
       this.appInit()
     }
@@ -109,6 +106,9 @@ export default class App extends Vue {
 }
 </script>
 <style lang="scss">
+  #app .v-bottom-navigation .v-btn {
+    height: inherit !important;
+  }
   .v-application--wrap {
     background: linear-gradient(rgb(245, 245, 245), rgb(218, 218, 218));
   }

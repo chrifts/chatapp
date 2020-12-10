@@ -49,7 +49,9 @@ import { axiosRequest } from '../helpers/index'
 import router from "../router";
 import store from '../store/index'
 
-@Component({})
+@Component({
+  name: 'Login',
+})
 export default class Login extends Vue {
   loading = this.$store.getters.mainLoading;
   public passwordShow = false;

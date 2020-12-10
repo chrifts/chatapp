@@ -12,7 +12,9 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
-@Component
+@Component({
+  name: 'Profile',
+})
 export default class Profile extends Vue {
   get user() {
     return this.$store.getters.user;

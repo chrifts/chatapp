@@ -73,7 +73,7 @@
                     <v-btn @click="handleContactRequest(item._id, 'RESEND', index)">resend</v-btn>
                     <v-btn @click="handleContactRequest(item._id, 'RESEND_CANCEL', index)">cancel</v-btn>
                   </div>
-                  
+                  {{dt(item)}}
                   <v-list-item-subtitle v-if="item.status == 'connecteds'"> {{item.lastMessage ? item.lastMessage.message : 'Start chat'}} </v-list-item-subtitle>
 
                   <v-btn 
@@ -122,12 +122,12 @@
               </v-list-item>
             </template>
           </v-list>
-          <!-- <v-list v-else>
+          <v-list v-else>
             <v-progress-linear
               indeterminate
               color="yellow darken-2"
             ></v-progress-linear>
-          </v-list> -->
+          </v-list>
         </v-col>
       </v-row>
     </v-col>
@@ -140,7 +140,9 @@ import { Socket } from 'vue-socket.io-extended'
 import { CONTACT_REQUEST, NEW_MESSAGE } from "../../constants";
 import _ from 'lodash';
 
-@Component
+@Component({
+  name: 'Contacts',
+})
 export default class Contacts extends Vue {
 
   NEW_MESSAGE = NEW_MESSAGE;
@@ -152,13 +154,16 @@ export default class Contacts extends Vue {
   alert = false;
   api: string = (this.$root as any).urlApi;
   addingContact = false;
-  contactsLoading = false;
+  contactsLoading = this.$store.getters.contactsLoading;
   mainNotifications = this.mainNotif;
 
   defineContactEmail(val: string) {
     this.newContactEmail = val;
   }
 
+  dt(q){
+    console.log(q)
+  }
   
   get mydata() {
     return this.$store.getters.user;

@@ -1,9 +1,12 @@
+import { postMessage } from './helpers/index'
+
 module.exports = function(io: any) {
-
-
     //selected Chat Namespaces
     const chatspaces = io.of(/^\/chat-\w+$/);
     chatspaces.on('connection', socket => {
+        socket.on('ChatSpaceMessage', (msg)=>{
+            postMessage(io, msg)
+        })
         const chatSpace = socket.nsp;
         console.log('connected to ChatSpace: '+chatSpace.name)
         socket.broadcast.emit('broadcast', 'hello friends')

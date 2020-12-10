@@ -76,6 +76,7 @@ import { io } from 'socket.io-client';
 Vue.use(VueScrollTo)
 
 @Component({
+  name: 'Chat',
   components: {
     Contacts,
     ChatList,
@@ -147,11 +148,12 @@ export default class Chat extends Vue {
         }
   }
 
-  myNewMsg(msg) {
-    
-    msg.from = msg.from._id
-    if(msg.from == this.mydata._id) {
-      this.newMessage = msg
+  myNewMsg(data) {
+    this.socket.emit('ChatSpaceMessage', data)
+    data.from = data.from._id
+    if(data.from == this.mydata._id) {
+      data.message.from = data.from
+      this.newMessage = data.message
     }
   }
 

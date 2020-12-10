@@ -21,6 +21,7 @@ export default new Vuex.Store({
     selectedChat: null,
     mainLoading: false,
     mainNotifications: notif,
+    contactsLoading: true,
     allContacts: [{
       _id: String,
       status: String,
@@ -56,10 +57,10 @@ export default new Vuex.Store({
         return;
       }
       if(payload.notification) {
-        console.log(payload)
+        
         const contacto = state.allContacts.filter(contact => contact._id == payload.from);
         const _cont = (contacto[0] as any)
-        console.log(_cont)
+        
         if(state.mainNotifications[payload.type]) {
           state.mainNotifications[payload.type][_cont._id] ? null : state.mainNotifications[payload.type][_cont._id] = [];
           switch (payload.type) {
@@ -97,10 +98,8 @@ export default new Vuex.Store({
       }
     },
     updateContactLastMessage(state, payload) {
-      console.log(payload)
       state.allContacts.forEach((contact: any, index) => {
         if(contact._id == payload.to || contact._id == payload.from) {
-          console.log(payload)
           state.allContacts[index].lastMessage = { message: payload.message, timestamp: payload.timestamp}
           state.allContacts = [...state.allContacts];
         }
@@ -141,7 +140,6 @@ export default new Vuex.Store({
           })
           break;
         case 'RESEND_BY_REJECTOR':
-          console.log(payload)
           state.allContacts.forEach((contact: any, index) => {
             if(contact._id == payload.payload.from) {
               state.allContacts[index].status = payload.payload.message.requestStatus
@@ -160,7 +158,6 @@ export default new Vuex.Store({
       }
     },
     setUser(state, payload) {
-      console.log(payload);
       state.user = payload;
     },
     setStatus(state, payload) {
@@ -171,6 +168,9 @@ export default new Vuex.Store({
     },
     setMainLoading(state, payload) {
       state.mainLoading = payload;
+    },
+    setContactsLoading(state, payload) {
+      state.contactsLoading = payload
     }
   },
   actions: {
@@ -178,13 +178,12 @@ export default new Vuex.Store({
     async GET_CONTACTS({commit}, payload) {
       const urlApi: string = process.env.NODE_ENV == 'development' ? process.env.VUE_APP_API! : process.env.VUE_APP_API_PROD!;
       const res = await axiosRequest('POST', urlApi + '/user/get-contacts', {email: payload.user.email}, {headers: {"x-auth-token": payload.jwtKey}})
-      console.log(res.data.contacts)
       commit('SOCKET_setContacts', res.data.contacts)
+      commit('setContactsLoading', false)
     },
     SET_USER({commit}, payload) {
       
       commit('setUser', payload)
-      console.log(payload)
       if(payload.notifications) {
         this.dispatch('UPDATE_NOTIF', payload)
       }
@@ -210,8 +209,11 @@ export default new Vuex.Store({
     }
   },
   getters: {
+    contactsLoading(state) {
+      return state.contactsLoading;
+    },
     contactData: (state) => (_id) => {
-      console.log(state.allContacts)
+      
       const contacto = state.allContacts.filter(contact => contact._id == _id);
       
       (contacto[0] as any).notifications = {};

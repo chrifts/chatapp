@@ -103,7 +103,6 @@ const init = () => {
       },
       watch: {
         '$store.state.user': function(user) {
-          console.log(user);
           if(user) {
             if(!this.$socket){
               //TODO MAKE FUNCTION OF THIS BLOCK
@@ -138,6 +137,5 @@ const init = () => {
 };    
 
 auth().then((logged)=> {
-  console.log(store.getters.user)
   init();
 })
