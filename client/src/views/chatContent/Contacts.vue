@@ -49,7 +49,7 @@
           <v-list three-line v-if="!contactsLoading">
             <template  v-for="(item, index) in contacts">
               <v-list-item
-                v-if="item.status != 'rejected_by_me' && !item.loading"
+                v-if="item.status != 'rejected_by_me'"
                 :key="index"
                 v-on="item.status == 'connecteds' ? { click: () => selectChat(item) } : {}"
               >
@@ -70,8 +70,14 @@
                   <v-list-item-subtitle v-if="item.status == 'sent'"> Pending </v-list-item-subtitle>
                   <div v-else-if="item.status == 'rejected_by_contact'">
                     <v-list-item-subtitle > Request rejected </v-list-item-subtitle>
-                    <v-btn @click="handleContactRequest(item._id, 'RESEND', index)">resend</v-btn>
-                    <v-btn @click="handleContactRequest(item._id, 'RESEND_CANCEL', index)">cancel</v-btn>
+                    <v-btn 
+                      :loading="item.loading"
+                      :disabled="item.loading"
+                      @click="handleContactRequest(item._id, 'RESEND', index)">resend</v-btn>
+                    <v-btn 
+                      :loading="item.loading"
+                      :disabled="item.loading"
+                      @click="handleContactRequest(item._id, 'RESEND_CANCEL', index)">cancel</v-btn>
                   </div>
                   {{dt(item)}}
                   <v-list-item-subtitle v-if="item.status == 'connecteds'"> {{item.lastMessage ? item.lastMessage.message : 'Start chat'}} </v-list-item-subtitle>
@@ -195,6 +201,8 @@ export default class Contacts extends Vue {
 
   async handleContactRequest(contactId: string, event: string, index: any) {
     this.contacts[index].loading = true;
+    this.contacts = [...this.contacts]
+    console.log(this.contacts[index], index, this.contacts)
     const myId = this.mydata._id;
 
     try {
@@ -208,8 +216,8 @@ export default class Contacts extends Vue {
           headers: {"x-auth-token": this.$cookies.get('jwt')
         }
       })
+      
       this.$store.commit('readNotifications', this.mainNotifications)
-      this.contacts[index].loading = false;
       this.contactsLoading = false;
         
     } catch (error) {
