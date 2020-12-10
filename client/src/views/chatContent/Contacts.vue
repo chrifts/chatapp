@@ -46,6 +46,9 @@
       </v-row>
       <v-row>
         <v-col cols=12 style="padding: 0">
+          <template v-if="contactError != null">
+            {{contactError}}
+          </template>
           <v-list three-line v-if="!contactsLoading">
             <template  v-for="(item, index) in contacts">
               <v-list-item
@@ -162,6 +165,7 @@ export default class Contacts extends Vue {
   addingContact = false;
   contactsLoading = this.$store.getters.contactsLoading;
   mainNotifications = this.mainNotif;
+  contactError = null;
 
   defineContactEmail(val: string) {
     this.newContactEmail = val;
@@ -208,14 +212,21 @@ export default class Contacts extends Vue {
     try {
       const response = await axiosRequest('POST', this.api+'/user/handle-contact-request', 
         {
-          contactId: contactId, 
-          myId: myId, 
+          contactId: contactId,
           event: event
         }, 
         { 
           headers: {"x-auth-token": this.$cookies.get('jwt')
         }
       })
+
+      if(response.status == 500) {
+        this.contactsLoading = false;
+        this.contacts[index].loading = false;
+        this.contacts = [...this.contacts]
+        this.contactError = response.data;
+      
+      }
       
       this.$store.commit('readNotifications', this.mainNotifications)
       this.contactsLoading = false;
@@ -223,6 +234,8 @@ export default class Contacts extends Vue {
     } catch (error) {
       this.contactsLoading = false;
       this.contacts[index].loading = false;
+      this.contacts = [...this.contacts]
+      this.contactError = error;
       throw new Error(error)
     }
   }
@@ -252,7 +265,7 @@ export default class Contacts extends Vue {
       
       this.addingContact = true;
       const response = await axiosRequest('POST', this.api + '/user/add-contact', 
-        { myEmail: this.mydata.email, contactEmail: this.newContactEmail }, 
+        { contactEmail: this.newContactEmail }, 
         { headers: { "x-auth-token": this.$cookies.get('jwt') }
       })
 

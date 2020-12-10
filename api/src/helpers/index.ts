@@ -19,6 +19,7 @@ async function sendNotification(from, to, message, type, io?, socketEvent?){
             notification: true,
             status: 'unread'
         };
+        delete notification.extraDataFrom.notifications;
         const user = await UM.findOneAndUpdate({
                 _id: to,
             },

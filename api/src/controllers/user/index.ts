@@ -7,7 +7,7 @@ function ADD_CONTACT(io: any) {
     const callback = async (req, res) => {
         try {
             const contact = await UM.findOne({email: req.body.contactEmail}).lean()
-            const me = await UM.findOne({email: req.body.myEmail}).lean()
+            const me = await UM.findOne({email: req.user.email}).lean()
             let userExists = false;
             let userExistsStatus = false;
             
@@ -37,31 +37,31 @@ function ADD_CONTACT(io: any) {
                 
                 if(userExistsStatus) {
                     //RESENT BY REJECTOR
-                    await UM.findOneAndUpdate({
-                        email: req.body.myEmail
+                    await UM.updateOne({
+                        email: req.user.email,
+                        "contacts.contact_id": contact._id
                     }, 
                     {
                         $set: {
-                            contacts: {
-                                status: 'requested_by',
-                                contact_id: contact._id
-                            }
+                            "contacts.$.status" : 'sent',
+                            contact_id: contact._id 
                         }
                     })
-                    await UM.findOneAndUpdate({
-                        email: req.body.contactEmail
-                    },
+                    
+                    await UM.updateOne({
+                        email: req.body.contactEmail,
+                        "contacts.contact_id": me._id
+                    }, 
                     {
                         $set: {
-                            contacts: {
-                                status: 'sent',
-                                contact_id: me._id
-                            }
+                            "contacts.$.status" : 'requested_by',
+                            contact_id: me._id 
                         }
                     })
+
                 } else {
                     await UM.findOneAndUpdate({
-                        email: req.body.myEmail
+                        email: req.user.email
                     }, 
                     {
                         $push: {
@@ -108,7 +108,7 @@ function GET_CONTACTS(io: any) {
     const callback = async (req, res) => {
         
         try {
-            const me = await UM.findOne({email: req.body.email}).lean()
+            const me = await UM.findOne({email: req.user.email}).lean()
             let contacts = []
             for await (const element of me.contacts) {
                 const contact = await UM.findOne(
@@ -145,7 +145,7 @@ function HANDLE_CONTACT_REQUEST(io: any) {
     const callback = async (req, res) => {
         
         try {
-            const my_data = await UM.findOne({_id: req.body.myId}).lean();             
+            const my_data = await UM.findOne({_id: req.user._id}).lean();             
             delete my_data.password;
             delete my_data.contacts;
 
@@ -159,7 +159,7 @@ function HANDLE_CONTACT_REQUEST(io: any) {
                     try {
                         const contact = await UM.updateOne({
                             _id: req.body.contactId,
-                            "contacts.contact_id": req.body.myId
+                            "contacts.contact_id": req.user._id
                         }, 
                         {
                             $set: {
@@ -167,7 +167,7 @@ function HANDLE_CONTACT_REQUEST(io: any) {
                             }
                         })
                         const me = await UM.updateOne({
-                            _id: req.body.myId,
+                            _id: req.user._id,
                             "contacts.contact_id": req.body.contactId
                         }, 
                         {
@@ -180,7 +180,7 @@ function HANDLE_CONTACT_REQUEST(io: any) {
                         await sendNotification(my_data, contact_data._id, {message: {event:'ACCEPTED', status: 'connecteds'}}, CONTACT_REQUEST, io, event_to_send)
                         await readNotification(my_data, contact_data, CONTACT_REQUEST)
                         io.of('/user-'+req.body.contactId).emit(event_to_send, my_data)
-                        io.of('/user-'+req.body.myId).emit(event_to_send, contact_data)
+                        io.of('/user-'+req.user._id).emit(event_to_send, contact_data)
                         res.status(200).json({event:'ACCEPTED', status: 'connecteds'})
                     } catch (error) {
                         res.status(500).json({error: error})
@@ -193,7 +193,7 @@ function HANDLE_CONTACT_REQUEST(io: any) {
                        
                         const contact = await UM.updateOne({
                             _id: req.body.contactId,
-                            "contacts.contact_id": req.body.myId
+                            "contacts.contact_id": req.user._id
                         }, 
                         {
                             $set: {
@@ -201,7 +201,7 @@ function HANDLE_CONTACT_REQUEST(io: any) {
                             }
                         })
                         const me = await UM.updateOne({
-                            _id: req.body.myId,
+                            _id: req.user._id,
                             "contacts.contact_id": req.body.contactId
                         }, 
                         {
@@ -214,16 +214,17 @@ function HANDLE_CONTACT_REQUEST(io: any) {
                         await readNotification(my_data, contact_data, CONTACT_REQUEST)
                         await sendNotification(my_data, contact_data._id, {message: {event:'RESEND', status: 'resend'}}, CONTACT_REQUEST, io, event_to_send)
                         // io.of('/user-'+req.body.contactId).emit(event_to_send, my_data)
-                        io.of('/user-'+req.body.myId).emit(event_to_send, contact_data)
+                        io.of('/user-'+req.user._id).emit(event_to_send, contact_data)
                         res.status(200).json({event:event_to_send, status: 'resent'})
                     break;
                 
                 case 'REJECTED':
+                    console.log(req.body)
                     event_to_send = 'CONTACT_STATUS_REJECTED';
                     try {    
                         const contact = await UM.updateOne({
                             _id: req.body.contactId,
-                            "contacts.contact_id": req.body.myId
+                            "contacts.contact_id": req.user._id
                         }, 
                         {
                             $set: {
@@ -232,7 +233,7 @@ function HANDLE_CONTACT_REQUEST(io: any) {
                         })
     
                         const me = await UM.updateOne({
-                            _id: req.body.myId,
+                            _id: req.user._id,
                             "contacts.contact_id": req.body.contactId
                         }, 
                         {
@@ -244,7 +245,7 @@ function HANDLE_CONTACT_REQUEST(io: any) {
                         contact_data.status = 'rejected_by_me'
                         await readNotification(my_data, contact_data, CONTACT_REQUEST)
                         await sendNotification(my_data, contact_data._id, {message: {event:'REJECTED', status: 'rejected'}}, CONTACT_REQUEST, io, event_to_send)
-                        io.of('/user-'+req.body.myId).emit(event_to_send, contact_data)
+                        io.of('/user-'+req.user._id).emit(event_to_send, contact_data)
                         res.status(200).json({message: 'rejected'})
                     } catch (error) {
                         res.status(500).json({error: error})
@@ -261,14 +262,14 @@ function HANDLE_CONTACT_REQUEST(io: any) {
                                 _id: req.body.contactId
                             }, 
                             {
-                                $pull: { contacts: { contact_id: req.body.myId } }
+                                $pull: { contacts: { contact_id: req.user._id } }
                             },
                             {multi: true} 
                         )
 
                         const me = await UM.updateOne( 
                             {
-                                _id: req.body.myId
+                                _id: req.user._id
                             }, 
                             {
                                 $pull: { contacts: { contact_id: req.body.contactId } }
@@ -281,7 +282,7 @@ function HANDLE_CONTACT_REQUEST(io: any) {
                         my_data.status = 'resend_cancelled'
                         //contact_data.status = 'resend_cancelled'
                         //io.of('/'+req.body.contactId).emit(event_to_send, my_data)
-                        io.of('/user-'+req.body.myId).emit(event_to_send, contact_data)
+                        io.of('/user-'+req.user._id).emit(event_to_send, contact_data)
                         res.status(200).json({message: 'resend_cancelled'})
                     } catch (error) {
                         res.status(500).json({error: error})
