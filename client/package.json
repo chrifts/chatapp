@@ -20,6 +20,7 @@
     "dotenv": "^8.2.0",
     "element-resize-detector": "^1.2.1",
     "firebase": "^7.24.0",
+    "ifvisible.js": "^1.0.6",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
     "socket.io": "^3.0.1",

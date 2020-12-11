@@ -19,6 +19,7 @@ import Component from "vue-class-component";
 import NavBar from "@/components/NavBar.vue";
 import { axiosRequest } from './helpers';
 import store from './store/index'
+import ifvisible from 'ifvisible.js'
 
 @Component({
   name: 'App',
@@ -48,9 +49,13 @@ export default class App extends Vue {
     }
   }
 
-  async appInit() {
+  async appInit(evt?: any) {
     console.log('APP INIT')
     this.appLoading = true;
+    if(evt == 'focus') {
+      this.$store.commit('setMainAppSocketStatus', 'connecting...')
+      this.$socket.client.connect();
+    }
     const sessionToken = this.$cookies.get('jwt'); 
     if(this.theUser.email){
       //get user contacts
@@ -70,12 +75,28 @@ export default class App extends Vue {
   }
 
   mounted(){
+    //TODO: FOCUS BLUR DEL MAIN SOCKET. VER SWITCH
+    console.log(ifvisible)
+    ifvisible.on('focus', ()=> {
+      if(!this.$socket.client.connected) {
+        this.appInit('focus');
+      }
+    })
+
+    ifvisible.on('blur', ()=> {
+      if(this.$socket.client.connected) {
+        this.$socket.client.disconnect()
+      }
+    })
+      
+      
     this.$root.$on('connectToMainSocket', async ()=>{
       console.log('connectToMainSocket')
       if(this.$socket.client.disconnected) {
         const user = await axiosRequest('POST', (this.$root as any).urlApi + '/get-user', {}, {headers: {"x-auth-token": this.$cookies.get('jwt')}})
         this.$store.dispatch('SET_USER', user.data)
         this.$socket.client.connect()
+        this.$socket.client.connected ? this.$store.commit('setMainAppSocketStatus', 'connected') : null;
       }
     })
     this.$root.$on('disconnectAllSockets', ()=>{

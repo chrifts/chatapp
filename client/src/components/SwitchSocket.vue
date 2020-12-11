@@ -3,6 +3,7 @@
         :loading="loading"
         :disabled="loading"
         value
+        @click="clicked(switchSocket)"
         :input-value="switchSocket"
         v-model="switchSocket"/>
 </template>
@@ -18,10 +19,8 @@ import { Watch } from 'vue-property-decorator';
 export default class SwitchSocket extends Vue{
     
     switchSocket = this.mainAppSocketStatus == 'connected' ? true : false;
-    mainSocketStatus = this.mainAppSocketStatus;
     loading = true;
     debugSwitch = true;
-    firstLoad = true;
 
     get mainAppSocketStatus() {
         return this.$store.getters.mainAppSocketStatus;
@@ -29,32 +28,30 @@ export default class SwitchSocket extends Vue{
 
     @Watch('$store.state.mainAppSocketStatus')
     onSocketStatusChange(ss: any) {
-        this.mainSocketStatus = ss;
-        if(ss == 'connected') {
+        if(ss == 'connected' || ss == 'disconnected') {
             this.loading = false;
-            this.switchSocket = true;
-            
+            ss == 'connected' ? this.switchSocket = true : this.switchSocket = false;
         } else {
-            this.loading = false;
-            this.switchSocket = false;
+            this.loading = true;
         }
     }
 
-    @Watch('switchSocket')
-    onSwitchSocket(val){
-        if(!this.firstLoad){
-            this.loading = true;
+    clicked(val){
+        if(val) {
+            this.$store.commit('setMainAppSocketStatus', 'connecting...')
+            this.$root.$emit('connectToMainSocket');
+        } else {
+            this.$root.$emit('disconnectAllSockets');
         }
-        if(this.debugSwitch) {
-            if(val) {
-                this.firstLoad = false;
-                this.$root.$emit('connectToMainSocket');
-            } else {
-                //this.$socket.client.disconnect()
-                this.$root.$emit('disconnectAllSockets');
-            }
-        }   
     }
+
+    // @Watch('switchSocket')
+    // onSwitchSocket(val){
+    //     if(this.debugSwitch) {
+    //         this.loading = true;
+            
+    //     }   
+    // }
 }
 </script>
 <style lang="scss" scoped>
