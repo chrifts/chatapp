@@ -182,6 +182,7 @@ export default new Vuex.Store({
       const res = await axiosRequest('POST', urlApi + '/user/get-contacts', {}, {headers: {"x-auth-token": payload.jwtKey}})
       commit('SOCKET_setContacts', res.data.contacts);
       commit('setContactsLoading', false)
+      return res;
     },
     SET_USER({commit}, payload) {
       

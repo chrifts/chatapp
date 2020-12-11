@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <v-app :class="{'mobile-container' : $vuetify.breakpoint.mobile, 'padding-ios': $root.$data.platform.operatingSystem == 'ios'}">
+    <v-app :class="{'mobile-container' : $vuetify.breakpoint.mobile, 'padding-ios': $root.$data.platform.operatingSystem == 'ios' && $root.$data.platform.platform == 'web'}">
       <NavBar 
         v-if="!$vuetify.breakpoint.mobile"  
         style="z-index: 1;"
@@ -60,8 +60,9 @@ export default class App extends Vue {
     const sessionToken = this.$cookies.get('jwt'); 
     if(this.theUser.email){
       //get user contacts
-      await this.$store.dispatch('GET_CONTACTS', { user: this.theUser, jwtKey: sessionToken })
+      const contacts = await this.$store.dispatch('GET_CONTACTS', { user: this.theUser, jwtKey: sessionToken })
       //save user data
+      console.log(contacts);
       //NO RECARGO USER; ENTONCES NO TRAE LAS NUEVAS NOTIF HABIENDO ESTADO OFFLINE
       this.$store.commit('updateNotifications', this.theUser)
       if(this.$store.getters.selectedChat) {
