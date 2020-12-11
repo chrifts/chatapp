@@ -83,11 +83,11 @@ export default class App extends Vue {
       }
     })
 
-    ifvisible.on('blur', ()=> {
-      if(this.$socket.client.connected) {
-        this.$socket.client.disconnect()
-      }
-    })
+    // ifvisible.on('blur', ()=> {
+    //   if(this.$socket.client.connected) {
+    //     this.$socket.client.disconnect()
+    //   }
+    // })
       
       
     this.$root.$on('connectToMainSocket', async ()=>{
