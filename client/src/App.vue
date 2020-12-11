@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <v-app :class="{'mobile-container' : $vuetify.breakpoint.mobile}">
+    <v-app :class="{'mobile-container' : $vuetify.breakpoint.mobile, 'padding-ios': $root.$data.platform.operatingSystem == 'ios'}">
       <NavBar 
         v-if="!$vuetify.breakpoint.mobile"  
         style="z-index: 1;"
@@ -50,7 +50,8 @@ export default class App extends Vue {
   }
 
   async appInit(evt?: any) {
-    console.log('APP INIT')
+    console.log('APP INIT', this.$data)
+
     this.appLoading = true;
     if(evt == 'focus') {
       this.$store.commit('setMainAppSocketStatus', 'connecting...')
@@ -141,9 +142,15 @@ export default class App extends Vue {
       #chat {
         padding: 0 !important;
       }
-      padding-bottom: 75px !important;
+      padding-bottom: 0px !important;
       z-index: 0;
     }
+  }
+  .padding-ios {
+    .v-application--wrap {
+      padding-bottom: 75px !important;
+    }
+    
   }
   #app {
     position: absolute;

@@ -11,8 +11,8 @@ import VueSocketIOExt from 'vue-socket.io-extended'
 import { io } from 'socket.io-client';
 import { MAIN_APP_CONTACT_HANDLER, MAIN_APP_MESSAGES } from './constants';
 import { defaultSocketEvents, customSocketEvents } from './helpers';
-
 dotenv.config();
+import { Plugins } from '@capacitor/core';
 
 let app: Vue;
 const urlApi: string = process.env.NODE_ENV == 'development' ? process.env.VUE_APP_API! : process.env.VUE_APP_API_PROD!;
@@ -92,6 +92,7 @@ const init = () => {
       },
       data: ()=>({
         urlApi: urlApi,
+        platform: {}
       }),
       beforeCreate: async function () {        
         this.$cookies.config(
@@ -100,6 +101,10 @@ const init = () => {
             path: '/',
           }
         );
+        const { Device } = Plugins;
+        const info = await Device.getInfo();
+        this.$data.platform = info;
+        console.log(this.$data);
       },
       watch: {
         '$store.state.user': function(user) {
