@@ -4,9 +4,7 @@ module.exports = function(io: any) {
     //selected Chat Namespaces
     const chatspaces = io.of(/^\/chat-\w+$/);
     chatspaces.on('connection', socket => {
-        socket.on('pong', function(data) {
-            console.log('Received Pong: ', data);
-        });
+        
         socket.on('ChatSpaceMessage', (msg)=>{
             postMessage(io, msg)
         })
@@ -24,7 +22,17 @@ module.exports = function(io: any) {
         const workspace = socket.nsp;
         //console.log(workspace);
         console.log(workspace.name+' connected');
-
+        
+        socket.on('pong', function(data){
+            console.log("Pong received from client");
+            setTimeout(sendHeartbeat, 25000);
+        });
+        
+    
+        function sendHeartbeat(){
+            setTimeout(sendHeartbeat, 25000);
+            socket.emit('ping', { beat : 1 });
+        }
         
         socket.on('disconnect', () => {
             console.log(workspace.name+' disconnected')

@@ -136,9 +136,6 @@ export default class Chat extends Vue {
               this.chatRoom = res.data.chat._id;
             }
           })
-          this.socket.on('ping', function(data) {
-            console.log('Received Pong: ', data);
-          });
           this.socket.on('NEW_MESSAGE', (msg)=>{
             console.log(msg)
             if(msg.from != this.mydata._id) {

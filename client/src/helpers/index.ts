@@ -53,6 +53,10 @@ function defaultSocketEvents (socket: any, opts?: {context?: string, store?: any
             opts?.store.commit('setMainAppSocketStatus', socketStatus)
         }
     })
+    socket.on('ping', function(data) {
+        socket.emit('pong', data);
+        console.log('ping', data.beat );
+    });
     socket.on('connect_error', (error)=>{
         console.log('socket error: ', error, socket)
         if(opts?.context == 'mainSocket' ) {
