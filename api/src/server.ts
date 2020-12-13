@@ -44,7 +44,9 @@ const io = require('socket.io')(web, {
       methods: ["GET", "POST"],
       allowedHeaders: ["my-custom-header"],
       credentials: true
-    }
+    },
+    pingInterval: 10000,
+    pingTimeout: 5000,
 });
 
 require('./socket')(io);

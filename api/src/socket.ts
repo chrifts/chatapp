@@ -4,6 +4,9 @@ module.exports = function(io: any) {
     //selected Chat Namespaces
     const chatspaces = io.of(/^\/chat-\w+$/);
     chatspaces.on('connection', socket => {
+        socket.on('pong', function(data) {
+            console.log('Received Pong: ', data);
+        });
         socket.on('ChatSpaceMessage', (msg)=>{
             postMessage(io, msg)
         })
