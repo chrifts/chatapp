@@ -47,7 +47,6 @@ async function auth() {
       const socket = io(socketUrl + '/user-'+user.data._id);
       Vue.use(VueSocketIOExt, socket, { store });
       defaultSocketEvents(socket, {store: store, context: 'mainSocket'});
-      socket.emit('pong', "pong");
       customSocketEvents(socket, MAIN_APP_CONTACT_HANDLER, store, { user: user.data, jwtKey: sessionToken })
       customSocketEvents(socket, MAIN_APP_MESSAGES, store)
       store.commit("setUser", user.data);

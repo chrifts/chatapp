@@ -51,7 +51,10 @@ export default class App extends Vue {
 
   async appInit(evt?: any) {
     console.log('APP INIT', this.$data)
-
+    if(!this.$socket.client.connected){
+      this.$socket.client.connect();
+      this.$socket.client.emit('pong', 'pong');
+    }
     this.appLoading = true;
     if(evt == 'focus') {
       this.$store.commit('setMainAppSocketStatus', 'connecting...')

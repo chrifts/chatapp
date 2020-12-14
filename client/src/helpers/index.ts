@@ -50,6 +50,7 @@ function defaultSocketEvents (socket: any, opts?: {context?: string, store?: any
         // console.log('connected', socket)
         if(opts?.context == 'mainSocket' ) {
             socketStatus = 'connected';
+            socket.emit('pong', "pong");
             opts?.store.commit('setMainAppSocketStatus', socketStatus)
         }
     })
