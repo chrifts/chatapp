@@ -137,7 +137,7 @@ export default class Chat extends Vue {
             }
           })
           this.socket.on('NEW_MESSAGE', (msg)=>{
-            console.log(msg)
+            
             if(msg.from != this.mydata._id) {
               this.newMessage = msg
             }
@@ -158,11 +158,12 @@ export default class Chat extends Vue {
   }
 
   async focusChat(contact: any) {
-    console.log(this.chatSelected, contact)
+    
     if(this.chatSelected != contact) {
       if(this.socket) {
         this.socket.disconnect()
       }
+      this.$store.commit('setLoadingChat', true)
       this.chatWindow = true;
       this.chatSelected = contact;
       await this.connectSocket()

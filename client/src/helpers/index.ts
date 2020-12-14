@@ -1,7 +1,7 @@
 import axios from "axios";
 import { MAIN_APP_CONTACT_HANDLER, MAIN_APP_MESSAGES } from '../constants'
 import '@capacitor-community/http';
-import { Plugins } from '@capacitor/core';
+import { Capacitor, Plugins } from '@capacitor/core';
 
 async function axiosRequest(type: string, url: string, postData?: {}, headers?: {}) {
     
@@ -160,15 +160,17 @@ function customSocketEvents(socket: any,  context: string, store: any, auth?: {}
         });
     }
 }
-
-const setCookie = async (key, val) => {
-    const { Http } = Plugins;
-    const ret = await Http.setCookie({
+ const setCookie = async (key, value) => {
+    const { Http, CookieManagerPlugin } = Plugins;
+  
+    
+      const ret = await CookieManagerPlugin.setCookie({
         url: '/',
         key: key,
-        value: val
-    });
-  }
+        value: value,
+      });
+    
+  };
   
   const deleteCookie = async (key) => {
     const { Http } = Plugins;

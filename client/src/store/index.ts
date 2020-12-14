@@ -16,6 +16,7 @@ const notif: Notifications = { };
 export default new Vuex.Store({
   state: {
     firstLoad: false,
+    loadingChat: false,
     user: null,
     status: null,
     selectedChat: null,
@@ -104,6 +105,9 @@ export default new Vuex.Store({
           state.allContacts = [...state.allContacts];
         }
       })
+    },
+    setLoadingChat(state, payload){
+      state.loadingChat = payload
     },
     setMainAppSocketStatus(state, payload) {
       state.mainAppSocketStatus = payload;

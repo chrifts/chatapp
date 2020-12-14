@@ -78,8 +78,8 @@ export default class Login extends Vue {
         password: this.password
       })
       if(this.$root.$data.platform.operatingSystem == 'ios') {
-        await setCookie('jwt', user.data.accessToken)
-        await setCookie('refreshToken', user.data.refreshToken)
+        document.cookie = "jwt="+user.data.accessToken+"; path=/"
+        document.cookie = "refreshToken="+user.data.refreshToken+"; path=/"
       } else {
         this.$cookies.set('jwt', user.data.accessToken, {
           secure: false

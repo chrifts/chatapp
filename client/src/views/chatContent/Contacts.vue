@@ -35,8 +35,7 @@
                   v-model="alert"
                   border="left"
                   dismissible
-                  :color="addContactResponseMessage == 'Success' ? 'green lighten-2' : 'red lighten-2' "
-                > 
+                  :color="addContactResponseMessage == 'Success' ? 'green lighten-2' : 'red lighten-2' "> 
                   {{ addContactResponseMessage }}
                 </v-alert>
               </v-expansion-panel-content>
@@ -54,7 +53,8 @@
               <v-list-item
                 v-if="item.status != 'rejected_by_me'"
                 :key="index"
-                v-on="item.status == 'connecteds' ? { click: () => selectChat(item) } : {}"
+                v-on="item.status == 'connecteds' && !loadingChat ? { click: (evt) => selectChat(evt, item, index) } : {}"
+                :class="{'darken' : loadingChat, 'selected':item.active}"
               >
                 <v-list-item-avatar>
                   <img :src="'https://cdn.vuetifyjs.com/images/lists/1.jpg'">
@@ -166,6 +166,7 @@ export default class Contacts extends Vue {
   contactsLoading = this.$store.getters.contactsLoading;
   mainNotifications = this.mainNotif;
   contactError = null;
+  loadingChat = false;
 
   defineContactEmail(val: string) {
     this.newContactEmail = val;
@@ -194,7 +195,17 @@ export default class Contacts extends Vue {
     this.mainNotifications = val;
   }
 
-  selectChat(item: any) {
+  @Watch('$store.state.loadingChat')
+  onLoadedChat(val: any) {
+    this.loadingChat = val;
+  }
+
+  selectChat(event, item: any, index) {
+    this.contacts.forEach(e=>{
+      e.active = false;
+    })
+    this.contacts[index].active = true
+    this.contacts = [...this.contacts]
     this.$emit('chatSelected', item)
     this.$store.commit('readChat', item._id);
   }
@@ -317,8 +328,14 @@ export default class Contacts extends Vue {
     }
   }
 }
+.darken {
+  background-color: rgba(0, 0, 0, 0.1);
+}
 .bg-header {
   background-color: $main_1;
+}
+.selected {
+  background-color: #0000001c;
 }
 .v-list {
   padding: 0 !important;

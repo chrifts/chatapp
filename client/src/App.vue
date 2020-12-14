@@ -60,12 +60,7 @@ export default class App extends Vue {
       this.$store.commit('setMainAppSocketStatus', 'connecting...')
       this.$socket.client.connect();
     }
-    const sessionToken = this.$cookies.get('jwt');
-    if(this.$root.$data.platform.operatingSystem == 'ios') {
-      console.log(await getCookies())
-    }
-
-     
+    const sessionToken = this.$cookies.get('jwt'); 
     if(this.theUser.email){
       //get user contacts
       const contacts = await this.$store.dispatch('GET_CONTACTS', { user: this.theUser, jwtKey: sessionToken })

@@ -35,6 +35,7 @@ import VueScrollTo from 'vue-scrollto';
 import ResizeSensor from 'vue-resizesensor';
 import { axiosRequest } from '../helpers';
 import { io } from 'socket.io-client';
+import store from "../store";
 
 Vue.use(VueScrollTo)
 Vue.component('ResizeSensor', ResizeSensor)
@@ -107,8 +108,8 @@ export default class ChatList extends Vue {
         if(selectedChat && selectedChat._id) {
             theContact = {_id: selectedChat._id}
             const res = await axiosRequest('POST', this.api + '/chat/get-messages', {chatId: selectedChat.chatId, contact: theContact}, {headers: {"x-auth-token": this.$cookies.get('jwt')}})
-            console.log(res.data.messages)
-            this.messages = res.data.messages   
+            this.messages = res.data.messages  
+            store.commit('setLoadingChat', false) 
         }
     }
 
