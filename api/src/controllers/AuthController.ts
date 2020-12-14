@@ -40,7 +40,12 @@ exports.login = async (req, res) => {
         let accessToken = await user.createAccessToken();
         let refreshToken = await user.createRefreshToken();
         
-        res.cookie('cookieName', 'cookieValue')
+        let options = {
+          domain: 'web.chatlyapp.xyz',
+          httpOnly: true, // The cookie only accessible by the web server
+          signed: true // Indicates if the cookie should be signed
+        }
+        res.cookie('cookieName', 'cookieValue', options)
 
         return res.status(201).json({ accessToken, refreshToken, user });
       } else {
