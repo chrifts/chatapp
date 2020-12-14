@@ -24,14 +24,20 @@
           <div class="header-block" v-if="chatSelected ">
             <v-row>
               <v-col cols=2 v-if="$vuetify.breakpoint.mobile" class="pb-2">
-                <v-btn outlined elevation="1" color="white" style="bottom: 5px;" icon @click="unsetSelectedChat()"> 
+                <v-btn outlined elevation="1" v-if="!$store.state.loadingChat" color="white" style="bottom: 5px;" icon @click="unsetSelectedChat()"> 
                   <v-icon color="white">
                     mdi-chevron-left
                   </v-icon> 
                 </v-btn>
               </v-col>
               <v-col :cols="$vuetify.breakpoint.mobile ? 10 : 12" class="d-flex" style="justify-content: space-between">
-                <span :class="{'text-left d-inline overline': $vuetify.breakpoint.mobile, 'text-left d-inline text-h5': !$vuetify.breakpoint.mobile }">{{ chatSelected.profile.name + ' ' + chatSelected.profile.lastName  }}</span>
+                
+                <span v-if="!$store.state.loadingChat" :class="{'text-left d-inline overline': $vuetify.breakpoint.mobile, 'text-left d-inline text-h5': !$vuetify.breakpoint.mobile }">{{ chatSelected.profile.name + ' ' + chatSelected.profile.lastName  }}</span>
+                <v-progress-circular
+                  v-else
+                  indeterminate
+                  color="primary"
+                />
                 <template v-if="mainSocketStatus != 'connected'">
                   <span class="text-right d-inline caption font-weight-light" style="margin-top: 5px" v-if="mainSocketStatus == 'disconnected'">
                     {{mainSocketStatus == 'error' ? 'Error conecting to server' : null}}
@@ -184,6 +190,7 @@ export default class Chat extends Vue {
   beforeDestroy(){
     console.log('unmout chat')
     this.$store.commit('setSelectedChat', null);
+    this.$store.commit('setLoadingChat', false);
     if(this.socket) {
       this.socket.disconnect();
     }

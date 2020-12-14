@@ -3,9 +3,9 @@
     <!-- DESKTOP -->
     <v-bottom-navigation 
       :background-color="color"
-      :class="{'d-none' : chatSelected && $vuetify.breakpoint.mobile }" class="mainNav">
+      :class="{'d-none' : chatSelected && $vuetify.breakpoint.mobile }" backgroundColor="primary">
       <template v-if="loggedIn && !loading && !$vuetify.breakpoint.mobile">
-        <v-btn  color="white" text :to="'/'">
+        <v-btn  color="icons" text :to="'/'">
           {{appName}}
         </v-btn>
         <v-badge
@@ -23,14 +23,14 @@
       <v-spacer v-if="!$vuetify.breakpoint.mobile"></v-spacer>
       <template v-if="!loggedIn && !loading" class="v-bottom-navigation">
         <v-btn
-          color="white"
+          color="icons"
           text
           v-for="item in itemsNoAuth"
           :key="item.title"
           :to="item.link"
         >
           {{ item.title }}
-          <v-icon center color="white">{{ item.icon }}</v-icon>
+          <v-icon center color="icons">{{ item.icon }}</v-icon>
         </v-btn>
       </template>
 
@@ -41,7 +41,7 @@
           >
           <template v-slot:activator="{ on, attrs }">
             <v-btn
-              color="white"
+              color="icons"
               icon
               v-bind="attrs"
               v-on="on"
@@ -91,15 +91,19 @@
             </v-list-item>
           </v-list>
         </v-menu>
-        
-        <v-btn color="white" text v-for="item in itemsAuth" :key="item.title" :to="item.link">
+        <v-btn color="icons" text @click="changeTheme">
+          <v-icon center color="icons">
+            mdi-theme-light-dark
+          </v-icon>
+        </v-btn>
+        <v-btn color="icons" text v-for="item in itemsAuth" :key="item.title" :to="item.link">
           {{ item.title }}
-          <v-icon center color="white">{{ item.icon }}</v-icon>
+          <v-icon center color="icons">{{ item.icon }}</v-icon>
         </v-btn>
         
-        <v-btn text color="white" @click="logout" v-if="!$vuetify.breakpoint.mobile">
+        <v-btn text color="icons" @click="logout" v-if="!$vuetify.breakpoint.mobile">
           Logout
-          <v-icon color="white" center>exit_to_app</v-icon>
+          <v-icon color="icons" center>exit_to_app</v-icon>
         </v-btn>
       </template>  
     </v-bottom-navigation>
@@ -147,6 +151,12 @@ export default class NavBar extends Vue {
   hasNotifications = false;
   totalNotifications = 0;
   
+  changeTheme(){
+    const val = this.$vuetify.theme.dark ? false : true
+    this.$vuetify.theme.dark = val;
+    localStorage.setItem("dark", val.toString());
+  }
+
   @Watch('isOpen')
   onOpenNotif(val){
     if(!val) {

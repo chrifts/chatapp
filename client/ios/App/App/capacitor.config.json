@@ -10,8 +10,5 @@
       "launchShowDuration": 0
     }
   },
-  "cordova": {},
-  "server": {
-    "hostname": "web.chatlyapp.xyz"
-  }
+  "cordova": {}
 }

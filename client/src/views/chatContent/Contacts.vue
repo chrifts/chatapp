@@ -1,5 +1,5 @@
 <template>
-    <v-col :cols="$vuetify.breakpoint.mobile ? 12 : 4" class="col-contacts">
+    <v-col :cols="$vuetify.breakpoint.mobile ? 12 : 4" class="col-contacts" backgroundColor="primary">
       <v-row class="bg-header">
         <v-col cols=12>
           <v-expansion-panels>
@@ -53,7 +53,7 @@
               <v-list-item
                 v-if="item.status != 'rejected_by_me'"
                 :key="index"
-                v-on="item.status == 'connecteds' && !loadingChat ? { click: (evt) => selectChat(evt, item, index) } : {}"
+                v-on="item.status == 'connecteds' && !loadingChat && !item.active ? { click: (evt) => selectChat(evt, item, index) } : {}"
                 :class="{'darken' : loadingChat, 'selected':item.active}"
               >
                 <v-list-item-avatar>
@@ -66,10 +66,10 @@
                   color="green"
                   overlap
                 ></v-badge>
-                <v-list-item-content>
-                  <v-list-item-title v-html="item.email"/>
+                <v-list-item-content class="text--primary">
+                  <v-list-item-title v-html="item.email" />
                                     
-                  <v-list-item-subtitle v-if="item.status == 'requested_by'"> New contact request </v-list-item-subtitle>
+                  <v-list-item-subtitle v-if="item.status == 'requested_by'"  > New contact request </v-list-item-subtitle>
                   <v-list-item-subtitle v-if="item.status == 'sent'"> Pending </v-list-item-subtitle>
                   <div v-else-if="item.status == 'rejected_by_contact'">
                     <v-list-item-subtitle > Request rejected </v-list-item-subtitle>
@@ -200,6 +200,13 @@ export default class Contacts extends Vue {
     this.loadingChat = val;
   }
 
+  beforeDestroy(){
+    this.contacts.forEach(e=>{
+      e.active = false;
+    })
+    this.contacts = [...this.contacts]
+  }
+
   selectChat(event, item: any, index) {
     this.contacts.forEach(e=>{
       e.active = false;
@@ -313,17 +320,15 @@ export default class Contacts extends Vue {
 }
 
 .col-contacts {
-  background: linear-gradient($main_2, $main_3);
+  
   border-right: 1px solid #b4b4b4;
   padding-top: 0 !important;
   .v-list {
     background-color: transparent !important;
     .v-list-item__content {
-      color: white !important;
       font-weight: 600;
     }
     .v-list-item__subtitle {
-      color: white !important;
       font-weight: 100;
     }
   }

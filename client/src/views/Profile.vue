@@ -5,7 +5,7 @@
         mdi-account-circle
       </v-icon>
     </v-avatar>
-    <h1>Welcome {{ user.profile.name ? user.profile.name + ' ' + user.profile.lastName : ''  }} CACA</h1>
+    <h1>Welcome {{ user.profile.name ? user.profile.name + ' ' + user.profile.lastName : ''  }}</h1>
     DEBUG
     <div id="jsonView"></div>
   </div>

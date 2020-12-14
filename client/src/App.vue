@@ -1,11 +1,12 @@
 <template>
   <div id="app">
-    <v-app :class="{'mobile-container' : $vuetify.breakpoint.mobile, 'padding-ios': $root.$data.platform.operatingSystem == 'ios' && $root.$data.platform.platform == 'web'}">
+    <v-app 
+      backgroundColor="primary" :class="{'mobile-container' : $vuetify.breakpoint.mobile, 'padding-ios': $root.$data.platform.operatingSystem == 'ios' && $root.$data.platform.platform == 'web'}">
       <NavBar 
         v-if="!$vuetify.breakpoint.mobile"  
         style="z-index: 1;"
       />
-      <router-view/>
+      <router-view />
       
       <NavBar v-if="$vuetify.breakpoint.mobile" style="z-index: 1;" />
     </v-app>
@@ -31,6 +32,7 @@ export default class App extends Vue {
   
   theUser = this.$store.getters.user;
   appLoading = false;
+  goDark = true;
   
   @Watch('$store.state.user')
   onUser(val: any) {
@@ -50,6 +52,16 @@ export default class App extends Vue {
   }
 
   async appInit(evt?: any) {
+    
+    const theme = localStorage.getItem("dark");
+    if (theme) {
+        if (theme == "true") {
+            this.$vuetify.theme.dark = true;
+        } else {
+            this.$vuetify.theme.dark = false;
+        }
+    }
+    this.$vuetify.theme.dark = true
     console.log('APP INIT', this.$data)
     if(!this.$socket.client.connected){
       this.$socket.client.connect();
@@ -60,6 +72,7 @@ export default class App extends Vue {
       this.$store.commit('setMainAppSocketStatus', 'connecting...')
       this.$socket.client.connect();
     }
+    
     const sessionToken = this.$cookies.get('jwt'); 
     if(this.theUser.email){
       //get user contacts
@@ -80,6 +93,7 @@ export default class App extends Vue {
   }
 
   mounted(){
+    
     //TODO: FOCUS BLUR DEL MAIN SOCKET. VER SWITCH
     console.log(ifvisible)
     ifvisible.on('focus', ()=> {
@@ -135,9 +149,9 @@ export default class App extends Vue {
   #app .v-bottom-navigation .v-btn {
     height: inherit !important;
   }
-  .v-application--wrap {
-    background: linear-gradient(rgb(245, 245, 245), rgb(218, 218, 218));
-  }
+  // .v-application--wrap {
+  //   background: linear-gradient(rgb(245, 245, 245), rgb(218, 218, 218));
+  // }
   .mobile-container {
     .v-application--wrap {
       #main-view {
