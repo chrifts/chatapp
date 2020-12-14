@@ -17,7 +17,7 @@ import Vue from "vue";
 import { Watch } from "vue-property-decorator";
 import Component from "vue-class-component";
 import NavBar from "@/components/NavBar.vue";
-import { axiosRequest } from './helpers';
+import { axiosRequest, getCookies } from './helpers';
 import store from './store/index'
 import ifvisible from 'ifvisible.js'
 
@@ -60,7 +60,12 @@ export default class App extends Vue {
       this.$store.commit('setMainAppSocketStatus', 'connecting...')
       this.$socket.client.connect();
     }
-    const sessionToken = this.$cookies.get('jwt'); 
+    const sessionToken = this.$cookies.get('jwt');
+    if(this.$root.$data.platform.operatingSystem == 'ios') {
+      console.log(await getCookies())
+    }
+
+     
     if(this.theUser.email){
       //get user contacts
       const contacts = await this.$store.dispatch('GET_CONTACTS', { user: this.theUser, jwtKey: sessionToken })

@@ -5,7 +5,11 @@
         mdi-account-circle
       </v-icon>
     </v-avatar>
-    <h1>Welcome {{ user.profile.name ? user.profile.name + ' ' + user.profile.lastName : ''  }}</h1>
+    <h1>Welcome {{ user.profile.name ? user.profile.name + ' ' + user.profile.lastName : ''  }} CACA</h1>
+    <div>
+      {{this.$cookies.get('jwt')}}{{this.$cookies.get('refreshToken')}}
+      {{cok}}{{cok2}}
+    </div>
     <div id="jsonView"></div>
   </div>
 </template>
@@ -13,16 +17,31 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import JSONFormatter from 'json-formatter-js'
+import { getCookies } from "../helpers";
+
 
 @Component({
   name: 'Profile',
 })
 export default class Profile extends Vue {
+  cok;
+  cok2;
   get user() {
     return this.$store.getters.user;
   }
-  mounted() {
-    const formatter = new JSONFormatter({root: this.$root, cookies: {jwt: this.$cookies.get('jwt'), refresh: this.$cookies.get('refreshToken')}}, 0, 
+  async getCookie() {
+    const data = await getCookies()
+    console.log('COOKIE: ', data)
+    getCookies().then((dt)=> {
+      console.log('then: ', dt)
+      this.cok2 = dt
+    })
+    this.cok = data
+    return data
+  }
+  async mounted() {
+    await this.getCookie()
+    const formatter = new JSONFormatter({root: this.$root, cookies: {jwt: this.getCookie().then(dt => {return dt}), refresh: this.$cookies.get('refreshToken')}}, 0, 
     {
       hoverPreviewEnabled: false,
       hoverPreviewArrayCount: 100,
@@ -32,7 +51,7 @@ export default class Profile extends Vue {
       animateClose: true,
       useToJSON: true
     });
-    document.getElementById("jsonView").appendChild(formatter.render());
+    (document as any).getElementById("jsonView").appendChild(formatter.render());
   }
 }
 </script>

@@ -1,5 +1,7 @@
 import axios from "axios";
 import { MAIN_APP_CONTACT_HANDLER, MAIN_APP_MESSAGES } from '../constants'
+import '@capacitor-community/http';
+import { Plugins } from '@capacitor/core';
 
 async function axiosRequest(type: string, url: string, postData?: {}, headers?: {}) {
     
@@ -159,9 +161,46 @@ function customSocketEvents(socket: any,  context: string, store: any, auth?: {}
     }
 }
 
+const setCookie = async (key, val) => {
+    const { Http } = Plugins;
+    const ret = await Http.setCookie({
+        url: '/',
+        key: key,
+        value: val
+    });
+  }
+  
+  const deleteCookie = async (key) => {
+    const { Http } = Plugins;
+    const ret = await Http.deleteCookie({
+        url: '/',
+        key: key,
+    });
+  }
+  
+  const clearCookies = async (url = '/') => {
+    const { Http } = Plugins;
+  
+    const ret = await Http.clearCookies({
+      url: url,
+    });
+  }
+  
+  const getCookies = async () => {
+    const { Http } = Plugins;
+  
+    const ret = await Http.getCookies({
+      url: '/'
+    });
+    console.log('Got cookies', ret);
+    return JSON.stringify(ret.value);
+  };
+
 export {
     axiosRequest,
     emailRegex,
     defaultSocketEvents,
-    customSocketEvents
+    customSocketEvents, 
+    setCookie, 
+    getCookies
 }

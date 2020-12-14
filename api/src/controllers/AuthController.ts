@@ -3,6 +3,7 @@ const Token = require("../models/token.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = process.env;
+const cookieParser = require('cookie-parser');
 
 exports.signup = async (req, res) => {
   try {
@@ -38,6 +39,9 @@ exports.login = async (req, res) => {
         //generate a pair of tokens if valid and send
         let accessToken = await user.createAccessToken();
         let refreshToken = await user.createRefreshToken();
+        
+        res.cookie('cookieName', 'cookieValue')
+
         return res.status(201).json({ accessToken, refreshToken, user });
       } else {
         //send error if password is invalid

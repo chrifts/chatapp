@@ -45,7 +45,7 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import { Watch } from 'vue-property-decorator';
-import { axiosRequest } from '../helpers/index'
+import { axiosRequest, setCookie } from '../helpers/index'
 import router from "../router";
 import store from '../store/index'
 
@@ -77,12 +77,17 @@ export default class Login extends Vue {
         email: this.email,
         password: this.password
       })
-      this.$cookies.set('jwt', user.data.accessToken, {
-        secure: false
-      });
-      this.$cookies.set('refreshToken', user.data.refreshToken, {
-        secure: false
-      });      
+      if(this.$root.$data.platform.operatingSystem == 'ios') {
+        await setCookie('jwt', user.data.accessToken)
+        await setCookie('refreshToken', user.data.refreshToken)
+      } else {
+        this.$cookies.set('jwt', user.data.accessToken, {
+          secure: false
+        });
+        this.$cookies.set('refreshToken', user.data.refreshToken, {
+          secure: false
+        });
+      }      
       this.$store.dispatch('SET_USER', user.data.user);
       
       router.push({ name: "Home" });

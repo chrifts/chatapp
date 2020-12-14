@@ -4,7 +4,7 @@ import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
 import dotenv from 'dotenv';
-import { axiosRequest } from './helpers/index'
+import { axiosRequest, getCookies } from './helpers/index'
 import VueCookies from "vue-cookies-ts"
 Vue.use(VueCookies);
 import VueSocketIOExt from 'vue-socket.io-extended'
@@ -13,28 +13,12 @@ import { MAIN_APP_CONTACT_HANDLER, MAIN_APP_MESSAGES } from './constants';
 import { defaultSocketEvents, customSocketEvents } from './helpers';
 dotenv.config();
 import { Plugins } from '@capacitor/core';
+import '@capacitor-community/http';
+
 
 let app: Vue;
 const urlApi: string = process.env.NODE_ENV == 'development' ? process.env.VUE_APP_API! : process.env.VUE_APP_API_PROD!;
 const socketUrl: string = process.env.NODE_ENV == 'development' ? process.env.VUE_APP_SOCKET_URL! : process.env.VUE_APP_SOCKET_URL_PROD!;
-
-function getCookie(cname) {
-  const name = cname + "=";
-  const decodedCookie = decodeURIComponent(document.cookie);
-  const ca = decodedCookie.split(';');
-  for(let i = 0; i <ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
-}
-
-console.log(Vue.cookies.get('jwt'))
 
 async function auth() {
   store.commit("setMainLoading", true);
@@ -107,12 +91,18 @@ const init = () => {
         console.log(this.$data);
       },
       watch: {
-        '$store.state.user': function(user) {
+        '$store.state.user': async function(user) {
           if(user) {
             if(!this.$socket){
               //TODO MAKE FUNCTION OF THIS BLOCK
               const socket = io(socketUrl + '/user-'+user._id);
-              const sessionToken = this.$cookies.get('jwt');
+              let sessionToken;
+              if(this.$data.platform.operatingSystem == 'ios') {
+                sessionToken = await getCookies()
+              }else {
+                sessionToken = this.$cookies.get('jwt');
+              }
+              
               Vue.use(VueSocketIOExt, socket, { store });
               defaultSocketEvents(socket, {store: store, context: 'mainSocket'});
               customSocketEvents(socket, MAIN_APP_CONTACT_HANDLER, store, { user: user.data, jwtKey: sessionToken })
