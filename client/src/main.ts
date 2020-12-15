@@ -44,7 +44,6 @@ async function auth() {
         store.dispatch("LOGOUT_USER");
         Vue.cookies.remove('jwt');
         Vue.cookies.remove('refreshToken');
-        store.commit("setUser", null);
         store.commit("setMainLoading", false);
         return false;
       } else {
@@ -88,7 +87,6 @@ const init = () => {
         const { Device } = Plugins;
         const info = await Device.getInfo();
         this.$data.platform = info;
-        console.log(this.$data);
       },
       watch: {
         '$store.state.user': async function(user) {
@@ -96,13 +94,7 @@ const init = () => {
             if(!this.$socket){
               //TODO MAKE FUNCTION OF THIS BLOCK
               const socket = io(socketUrl + '/user-'+user._id);
-              let sessionToken;
-              if(this.$data.platform.operatingSystem == 'ios') {
-                sessionToken = await getCookies()
-              }else {
-                sessionToken = this.$cookies.get('jwt');
-              }
-              
+              const sessionToken = this.$cookies.get('jwt');
               Vue.use(VueSocketIOExt, socket, { store });
               defaultSocketEvents(socket, {store: store, context: 'mainSocket'});
               customSocketEvents(socket, MAIN_APP_CONTACT_HANDLER, store, { user: user.data, jwtKey: sessionToken })
@@ -111,11 +103,8 @@ const init = () => {
             } else {
               this.$socket.client.connect();
             }
-            
             store.commit("setMainLoading", false);
-            // if(!store.getters.firstLoad) {
-            //   router.push({ name: "Home" });
-            // }
+
           } else {
             store.commit("setUser", null);
             store.commit("setMainLoading", false);

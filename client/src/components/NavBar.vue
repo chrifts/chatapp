@@ -329,9 +329,6 @@ export default class NavBar extends Vue {
 </style>
 <style lang="scss" scoped>
 
-.mainNav {
-  background-color: var(--primary);
-}
 .unread {
   background-color: #cbcbcb;
   border-radius: 5px;

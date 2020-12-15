@@ -82,7 +82,6 @@
                       :disabled="item.loading"
                       @click="handleContactRequest(item._id, 'RESEND_CANCEL', index)">cancel</v-btn>
                   </div>
-                  {{dt(item)}}
                   <v-list-item-subtitle v-if="item.status == 'connecteds'"> {{item.lastMessage ? item.lastMessage.message : 'Start chat'}} </v-list-item-subtitle>
 
                   <v-btn 
@@ -224,7 +223,6 @@ export default class Contacts extends Vue {
   async handleContactRequest(contactId: string, event: string, index: any) {
     this.contacts[index].loading = true;
     this.contacts = [...this.contacts]
-    console.log(this.contacts[index], index, this.contacts)
     const myId = this.mydata._id;
 
     try {
@@ -263,7 +261,6 @@ export default class Contacts extends Vue {
 
   @Watch('$store.state.allContacts', { deep: true })
   onChangeContacts(val: any) {
-    console.log(val)
     const sorted = this.orderBy(val, 'lastMessage.timestamp', 'desc');
     this.contacts = sorted
     this.contactsLoading = false;
@@ -320,8 +317,8 @@ export default class Contacts extends Vue {
 }
 
 .col-contacts {
-  
-  border-right: 1px solid #b4b4b4;
+  background-color: var(--v-primary-base);
+  border-right: 1px solid var(--v-secondary-base);
   padding-top: 0 !important;
   .v-list {
     background-color: transparent !important;
@@ -337,7 +334,7 @@ export default class Contacts extends Vue {
   background-color: rgba(0, 0, 0, 0.1);
 }
 .bg-header {
-  background-color: $main_1;
+  background-color: var(--v-primary-base);
 }
 .selected {
   background-color: #0000001c;
@@ -346,8 +343,8 @@ export default class Contacts extends Vue {
   padding: 0 !important;
 }
 .theme--light.v-expansion-panels .v-expansion-panel {
-  background-color: $main_2 !important;
-  color: white !important;
+  background-color: var(--v-primary-base);
+  color: var(--text);
 }
 .v-avatar {
   transition: none !important;

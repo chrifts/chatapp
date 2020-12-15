@@ -32,7 +32,7 @@ export default class App extends Vue {
   
   theUser = this.$store.getters.user;
   appLoading = false;
-  goDark = true;
+  goDark = localStorage.getItem("dark");;
   
   @Watch('$store.state.user')
   onUser(val: any) {
@@ -52,7 +52,7 @@ export default class App extends Vue {
   }
 
   async appInit(evt?: any) {
-    
+    this.appLoading = true;
     const theme = localStorage.getItem("dark");
     if (theme) {
         if (theme == "true") {
@@ -61,54 +61,34 @@ export default class App extends Vue {
             this.$vuetify.theme.dark = false;
         }
     }
-    this.$vuetify.theme.dark = true
-    console.log('APP INIT', this.$data)
     if(!this.$socket.client.connected){
-      this.$socket.client.connect();
-      this.$socket.client.emit('pong', 'pong');
-    }
-    this.appLoading = true;
-    if(evt == 'focus') {
-      this.$store.commit('setMainAppSocketStatus', 'connecting...')
       this.$socket.client.connect();
     }
     
-    const sessionToken = this.$cookies.get('jwt'); 
+    if(evt == 'focus') {
+      if(!this.$socket.client.connected){
+        this.$store.commit('setMainAppSocketStatus', 'connecting...')
+        this.$socket.client.connect();
+      }
+    }
     if(this.theUser.email){
-      //get user contacts
-      const contacts = await this.$store.dispatch('GET_CONTACTS', { user: this.theUser, jwtKey: sessionToken })
-      //save user data
-      console.log(contacts);
-      //NO RECARGO USER; ENTONCES NO TRAE LAS NUEVAS NOTIF HABIENDO ESTADO OFFLINE
+      const contacts = await this.$store.dispatch('GET_CONTACTS', { user: this.theUser, jwtKey: this.$cookies.get('jwt') })
       this.$store.commit('updateNotifications', this.theUser)
       if(this.$store.getters.selectedChat) {
         const sc = this.$store.getters.selectedChat
         this.$store.commit('setSelectedChat', null)
         this.$store.commit('setSelectedChat', sc);
       } 
-      
-      this.appLoading = false;
-      //listen socket events
     }
+    this.appLoading = false;
   }
 
   mounted(){
-    
-    //TODO: FOCUS BLUR DEL MAIN SOCKET. VER SWITCH
-    console.log(ifvisible)
     ifvisible.on('focus', ()=> {
       if(!this.$socket.client.connected) {
         this.appInit('focus');
       }
-    })
-
-    // ifvisible.on('blur', ()=> {
-    //   if(this.$socket.client.connected) {
-    //     this.$socket.client.disconnect()
-    //   }
-    // })
-      
-      
+    })      
     this.$root.$on('connectToMainSocket', async ()=>{
       console.log('connectToMainSocket')
       if(this.$socket.client.disconnected) {

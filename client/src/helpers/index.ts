@@ -58,7 +58,7 @@ function defaultSocketEvents (socket: any, opts?: {context?: string, store?: any
     })
     socket.on('ping', function(data) {
         socket.emit('pong', data);
-        console.log('ping', data.beat );
+        console.log('ping', data);
     });
     socket.on('connect_error', (error)=>{
         console.log('socket error: ', error, socket)

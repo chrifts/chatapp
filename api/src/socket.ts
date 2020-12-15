@@ -25,14 +25,8 @@ module.exports = function(io: any) {
         
         socket.on('pong', function(data){
             console.log("Pong received from client");
-            setTimeout(sendHeartbeat, 25000);
+            socket.emit('ping', data);
         });
-        
-    
-        function sendHeartbeat(){
-            setTimeout(sendHeartbeat, 25000);
-            socket.emit('ping', { beat : 1 });
-        }
         
         socket.on('disconnect', () => {
             console.log(workspace.name+' disconnected')

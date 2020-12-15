@@ -21,7 +21,7 @@
           <div class="center_content" v-if="!chatSelected">
             <p>Choose a chat</p>
           </div>
-          <div class="header-block" v-if="chatSelected ">
+          <div class="header-block" v-if="chatSelected">
             <v-row>
               <v-col cols=2 v-if="$vuetify.breakpoint.mobile" class="pb-2">
                 <v-btn outlined elevation="1" v-if="!$store.state.loadingChat" color="white" style="bottom: 5px;" icon @click="unsetSelectedChat()"> 
@@ -32,7 +32,7 @@
               </v-col>
               <v-col :cols="$vuetify.breakpoint.mobile ? 10 : 12" class="d-flex" style="justify-content: space-between">
                 
-                <span v-if="!$store.state.loadingChat" :class="{'text-left d-inline overline': $vuetify.breakpoint.mobile, 'text-left d-inline text-h5': !$vuetify.breakpoint.mobile }">{{ chatSelected.profile.name + ' ' + chatSelected.profile.lastName  }}</span>
+                <span v-if="!$store.state.loadingChat" :class="{'text-left d-inline overline': $vuetify.breakpoint.mobile, 'text-left d-inline text-h5 text--primary': !$vuetify.breakpoint.mobile }">{{ chatSelected.profile.name + ' ' + chatSelected.profile.lastName  }}</span>
                 <v-progress-circular
                   v-else
                   indeterminate
@@ -284,7 +284,7 @@ export default class Chat extends Vue {
     margin: 0 auto;
     height: 100%;
     overflow: hidden;
-    box-shadow: 0 4px 9px 0 rgba(0, 0, 0, 0.5), 0 7px 4px 0 rgba(70, 70, 70, 0.2);
+    box-shadow: 0px 0px 6px 2px var(--v-shadow-lighten1), 0px 0px 1px 0 var(--v-shadow-lighten2);
   }
   .main-content-mobile {
     position: relative;
@@ -296,8 +296,8 @@ export default class Chat extends Vue {
     height: 100%;
     overflow: hidden;
     .header-block {
-      background-color: $main_1;
-      color: white;
+      background-color: var(--v-primary-base);
+      color: var(--v-text-base);
     }
   }
   .chat-main-view {
@@ -307,9 +307,9 @@ export default class Chat extends Vue {
     transition: background-color .3s;
   }
   .header-block {
-    box-shadow: 0pt 0pt 9pt 0pt #b8b8b8;
+    // box-shadow: 0pt 0pt 9pt 0pt #b8b8b8;
     z-index: 1;
-    background-color: #fff;
+    background-color: var(--v-primary-base);
     height: 72px;
     color: rgb(59, 59, 59);
     padding: 10px;
@@ -318,7 +318,7 @@ export default class Chat extends Vue {
     order: 1;
   }
   .chat-list-block {
-    background: radial-gradient(white, rgb(230, 230, 230));
+    background: var(--v-secondary-base);
     overflow-y: scroll;
     position: relative;
     display: block;

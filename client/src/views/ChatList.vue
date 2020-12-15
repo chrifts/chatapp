@@ -10,18 +10,18 @@
             <v-list :class="{'d-block' : chatWindow}" class="d-none" id="the-list">
             <template v-for="(item, index) in messages">
                 <v-list-item 
-                two-line 
-                :key="index"
-                class="bubble-left bubble"
-                :class="{'bubble-right': item.from == mydata._id, 'bubble-mobile' : $vuetify.breakpoint.mobile}"
+                    two-line 
+                    :key="index"
+                    class="bubble-left bubble "
+                    :class="{'bubble-right': item.from == mydata._id, 'bubble-mobile' : $vuetify.breakpoint.mobile}"
                 >
-                <v-list-item-content >
-                    {{item.message.trim()}}
-                    <v-list-item-subtitle
-                    class="text-left datetime"
-                    :class="{'text-right': item.from == mydata._id}"
-                    >{{parseTime(item.timestamp)}}</v-list-item-subtitle>
-                </v-list-item-content>
+                    <v-list-item-content >
+                        {{item.message.trim()}}
+                        <v-list-item-subtitle
+                        class="text-left datetime"
+                        :class="{'text-right': item.from == mydata._id}"
+                        >{{parseTime(item.timestamp)}}</v-list-item-subtitle>
+                    </v-list-item-content>
                 </v-list-item>
             </template>
             </v-list>
@@ -145,21 +145,21 @@ export default class ChatList extends Vue {
     }
 }
 .datetime {
-    color: #ffaaaa !important;
+    color: var(--v-text-darken4) !important;
 }
 .bubble-left {
-  background-color: #fff;
+    background-color: var(--v-chatleft-base) !important;
   text-align: left;
-  .v-list-item__content {
-    color: black !important;
-  }
+//   .v-list-item__content {
+//     color: var(--text);
+//   }
   margin: 10px 0px;
 }
 .bubble-mobile {
     max-width: 85% !important;
 }
 .bubble {
-  box-shadow: 3pt 4pt 2pt 0pt #c3c3c3;
+//   box-shadow: 3pt 4pt 2pt 0pt var(--shadow);
   margin: 10px 0px;
   min-width: 70px;
   max-width: 60%;
@@ -172,9 +172,9 @@ export default class ChatList extends Vue {
 .bubble-right {
   margin-left: 100%;
   text-align: left;
-  background-color: $main_1;
+  background-color: var(--v-chatright-base) !important;
   .v-list-item__content {
-    color: #fff !important;
+    color: var(--text);
   }
   float: right;
 }

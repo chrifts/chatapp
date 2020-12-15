@@ -172,9 +172,9 @@ export default class ChatFoot extends Vue {
     background-color: white;
 }
 .footer-block{
-  box-shadow: 0pt 0pt 9pt 0pt #b8b8b8;
+//   box-shadow: 0pt 0pt 9pt 0pt #b8b8b8;
   z-index: 1;
-  background-color: $chat-theme;
+  background-color: var(--v-primary-base);
   position: relative;
   z-index: 1;
   flex: none;
