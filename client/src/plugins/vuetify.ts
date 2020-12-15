@@ -14,7 +14,8 @@ export default new Vuetify({
                 accent: '#8c9eff',
                 error: '#b71c1c',
                 icons: '#636363',
-                text: '#000',
+                text: '#c6c6c6',
+                text2: '#6d6d6d',
                 shadow: '#777777',
                 chatright: '#dfffcd',
                 chatleft: '#ededed'
@@ -26,6 +27,7 @@ export default new Vuetify({
                 error: '#b71c1c',
                 icons: '#f3f3f3',
                 text: '#fff',
+                text2: '#f3f3f3',
                 shadow: '#000',
                 chatleft: '#272727',
                 chatright: '#0d0d0d'

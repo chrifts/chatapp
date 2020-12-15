@@ -4,7 +4,7 @@
         <v-col cols=12>
           <v-expansion-panels>
             <v-expansion-panel>
-              <v-expansion-panel-header>
+              <v-expansion-panel-header color="secondary lighten-3">
                 <template v-slot:default="{ open }">
                   <v-row no-gutters>
                     <v-col cols="12" class="">
@@ -20,7 +20,7 @@
                   </v-row>
                 </template>
               </v-expansion-panel-header>
-              <v-expansion-panel-content>
+              <v-expansion-panel-content color="secondary lighten-3">
                 <v-text-field
                   v-on:keyup="defineContactEmail($event.target.value)"
                   placeholder="email"

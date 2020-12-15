@@ -56,10 +56,10 @@ function defaultSocketEvents (socket: any, opts?: {context?: string, store?: any
         }
     })
     socket.on('ping', function(data) {
-        console.log('ping', data);
+        console.log('ping received');
         setTimeout(() => {
             socket.emit('pong', data);
-            console.log('pong emited', data);
+            console.log('pong emited');
         }, 25000);
     });
     socket.on('connect_error', (error)=>{

@@ -7,6 +7,10 @@ function ADD_CONTACT(io: any) {
     const callback = async (req, res) => {
         try {
             const contact = await UM.findOne({email: req.body.contactEmail}).lean()
+            if(!contact) {
+                res.status(403).json({error: 'No user found'})
+                return;
+            }
             const me = await UM.findOne({email: req.user.email}).lean()
             let userExists = false;
             let userExistsStatus = false;
@@ -33,66 +37,64 @@ function ADD_CONTACT(io: any) {
                 delete me.password;
                 delete me.contacts;
                 try {
-                    
-                
-                if(userExistsStatus) {
-                    //RESENT BY REJECTOR
-                    await UM.updateOne({
-                        email: req.user.email,
-                        "contacts.contact_id": contact._id
-                    }, 
-                    {
-                        $set: {
-                            "contacts.$.status" : 'sent',
-                            contact_id: contact._id 
-                        }
-                    })
-                    
-                    await UM.updateOne({
-                        email: req.body.contactEmail,
-                        "contacts.contact_id": me._id
-                    }, 
-                    {
-                        $set: {
-                            "contacts.$.status" : 'requested_by',
-                            contact_id: me._id 
-                        }
-                    })
+                    if(userExistsStatus) {
+                        //RESENT BY REJECTOR
+                        await UM.updateOne({
+                            email: req.user.email,
+                            "contacts.contact_id": contact._id
+                        }, 
+                        {
+                            $set: {
+                                "contacts.$.status" : 'sent',
+                                contact_id: contact._id 
+                            }
+                        })
+                        
+                        await UM.updateOne({
+                            email: req.body.contactEmail,
+                            "contacts.contact_id": me._id
+                        }, 
+                        {
+                            $set: {
+                                "contacts.$.status" : 'requested_by',
+                                contact_id: me._id 
+                            }
+                        })
 
-                } else {
-                    await UM.findOneAndUpdate({
-                        email: req.user.email
-                    }, 
-                    {
-                        $push: {
-                            contacts: {
-                                status: 'sent',
-                                contact_id: contact._id
+                    } else {
+                        await UM.findOneAndUpdate({
+                            email: req.user.email
+                        }, 
+                        {
+                            $push: {
+                                contacts: {
+                                    status: 'sent',
+                                    contact_id: contact._id
+                                }
                             }
-                        }
-                    })
-                    await UM.findOneAndUpdate({
-                        email: req.body.contactEmail
-                    },
-                    {
-                        $push: {
-                            contacts: {
-                                status: 'requested_by',
-                                contact_id: me._id
+                        })
+                        await UM.findOneAndUpdate({
+                            email: req.body.contactEmail
+                        },
+                        {
+                            $push: {
+                                contacts: {
+                                    status: 'requested_by',
+                                    contact_id: me._id
+                                }
                             }
-                        }
-                    })
-                }
-                me.status = 'requested_by'
-                contact.status = 'sent'    
-                await sendNotification(me, contact._id, {message: {event: 'NEW_CONTACT', status: 'new contact from', sentByRejector: userExistsStatus, requestStatus: me.status }}, CONTACT_REQUEST, io, 'CONTACT_REQUEST')
-                res.json({contact_data: contact});
+                        })
+                    }
+                    me.status = 'requested_by'
+                    contact.status = 'sent'    
+                    await sendNotification(me, contact._id, {message: {event: 'NEW_CONTACT', status: 'new contact from', sentByRejector: userExistsStatus, requestStatus: me.status }}, CONTACT_REQUEST, io, 'CONTACT_REQUEST')
+                    res.json({contact_data: contact});
                 } catch (error) {
                     res.send(403).json({error: 'Error adding contact'});   
                     throw new Error(error)    
                 }
             } else {
-                res.status(403).json({error: 'No user found'})
+                res.status(403).json({error: 'No user found @97'})
             }
         } catch (error) {
             res.status(500).json({error: error})

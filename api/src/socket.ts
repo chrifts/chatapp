@@ -31,6 +31,7 @@ module.exports = function(io: any) {
         
         socket.on('disconnect', () => {
             console.log(workspace.name+' disconnected')
+            socket.emit('reconnect_attempt', socket)
         });
     });
 }

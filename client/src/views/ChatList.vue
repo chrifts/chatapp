@@ -2,12 +2,12 @@
     <div class="chat-list-block px-3" id="chat-list"> 
         <ResizeSensor @resized="onResize" :debounce="50"></ResizeSensor>
         <v-progress-linear
-            v-if="chatSelected && !messages"
+            v-if="chatSelected && loadingChat"
             indeterminate
             color="primary"
         />
         <v-col cols=12 :style="messages ? 'visibility: visible' : 'visibility: hidden'">
-            <v-list :class="{'d-block' : chatWindow}" class="d-none" id="the-list">
+            <v-list :class="{'d-block' : chatWindow}" class="d-none" id="the-list" v-if="!loadingChat">
             <template v-for="(item, index) in messages">
                 <v-list-item 
                     two-line 
@@ -49,10 +49,15 @@ export default class ChatList extends Vue {
     
     @Model('change') message!: any
 
+    loadingChat = true;
+
+    @Watch('$store.state.loadingChat')
+    onLoadedChat(val: any) {
+        this.loadingChat = val;
+    }
+
     @Watch('message')
     onNewMessage(msg: any) {
-        console.log(msg)
-       
         this.messages.push(msg)
     }
     scrollOpts = {
@@ -193,17 +198,17 @@ export default class ChatList extends Vue {
 
 /* Track */
 .chat-list-block::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--v-primary-base);
 }
 
 /* Handle */
 .chat-list-block::-webkit-scrollbar-thumb {
-  background: darken($color: $chat-theme, $amount: 20);
+  background: var(--v-primary-darken1);
 }
 
 /* Handle on hover */
 .chat-list-block::-webkit-scrollbar-thumb:hover {
-  background: darken($color: $chat-theme, $amount: 25);
+  background: var(--v-primary-darken2);
 }
 
 </style>

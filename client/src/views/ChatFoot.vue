@@ -47,14 +47,14 @@
                 </div>
             </div>
             <v-btn 
-                :color="$vuetify.breakpoint.mobile ? 'white' : 'gray'"
+                color="icons"
                 icon 
                 elevation="1" 
                 outlined 
                 @click="sendMessage()"
                 class="mb-4 mr-2" style="position: relative; top: 1px;" >
                 <v-icon
-                    :color="$vuetify.breakpoint.mobile ? 'white' : 'gray'"
+                    color="icons"
                 >
                     mdi-send
                 </v-icon>
@@ -85,6 +85,7 @@ export default class ChatFoot extends Vue {
     newMessage: NewMessage;
     enterToSend = false;
     api = (this.$root as any).urlApi;
+
 
     @Prop() chatWindowProp: any;
 
@@ -124,27 +125,27 @@ export default class ChatFoot extends Vue {
     }
 
     sendMessage() {
-        const theTextArea = this.$refs._textarea as HTMLElement;
-        theTextArea.focus();
-        const messageTime = Date.now();
-        const myDataClean = this.mydata;
-        myDataClean.contacts = null
-        myDataClean.notifications = null
-        const theNewMessage = {
-            timestamp: messageTime,
-            message: this.messageText,
-            from: myDataClean as {},
-            to: this.chatSelected._id
+        if(this.messageText.length > 0) {
+            const theTextArea = this.$refs._textarea as HTMLElement;
+            theTextArea.focus();
+            const messageTime = Date.now();
+            const myDataClean = this.mydata;
+            myDataClean.contacts = null
+            myDataClean.notifications = null
+            const theNewMessage = {
+                timestamp: messageTime,
+                message: this.messageText,
+                from: myDataClean as {},
+                to: this.chatSelected._id
+            }
+            this.messageText = ''
+            this.$emit('myNewMsg', {chatId: this.chatSelected.chatId, from: myDataClean, message: theNewMessage })
+            store.commit('updateContactLastMessage', {to: this.chatSelected._id, message: theNewMessage.message, timestamp: theNewMessage.timestamp})
+            //axiosRequest('POST', this.api + '/chat/post-message', {chatId: this.chatSelected.chatId, from: myDataClean, message: theNewMessage }, {headers:{"x-auth-token":this.$cookies.get('jwt')}})
+            // eslint-disable-next-line
+            theTextArea.innerText = '';
+            return;
         }
-        console.log(theNewMessage)
-        this.messageText = ''
-        this.$emit('myNewMsg', {chatId: this.chatSelected.chatId, from: myDataClean, message: theNewMessage })
-        store.commit('updateContactLastMessage', {to: this.chatSelected._id, message: theNewMessage.message, timestamp: theNewMessage.timestamp})
-        //axiosRequest('POST', this.api + '/chat/post-message', {chatId: this.chatSelected.chatId, from: myDataClean, message: theNewMessage }, {headers:{"x-auth-token":this.$cookies.get('jwt')}})
-        // eslint-disable-next-line
-        theTextArea.innerText = '';
-        return;
-        
     }
 }
 </script>
@@ -194,6 +195,6 @@ export default class ChatFoot extends Vue {
   }
 }
 .footer-block__mobile {
-    background-color: $main_1 !important;
+    background-color: var(--v-primary-base)
 }
 </style>
