@@ -52,13 +52,15 @@ function defaultSocketEvents (socket: any, opts?: {context?: string, store?: any
         // console.log('connected', socket)
         if(opts?.context == 'mainSocket' ) {
             socketStatus = 'connected';
-            socket.emit('pong', "pong");
             opts?.store.commit('setMainAppSocketStatus', socketStatus)
         }
     })
     socket.on('ping', function(data) {
-        socket.emit('pong', data);
         console.log('ping', data);
+        setTimeout(() => {
+            socket.emit('pong', data);
+            console.log('pong emited', data);
+        }, 25000);
     });
     socket.on('connect_error', (error)=>{
         console.log('socket error: ', error, socket)

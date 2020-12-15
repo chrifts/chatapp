@@ -19,6 +19,7 @@ module.exports = function(io: any) {
     //User Main Namespace
     const workspaces = io.of(/^\/user-\w+$/);
     workspaces.on('connection', socket => {
+        socket.emit('ping', {info: 'first ping'});
         const workspace = socket.nsp;
         //console.log(workspace);
         console.log(workspace.name+' connected');
