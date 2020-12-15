@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <v-app 
-      backgroundColor="primary" :class="{'mobile-container' : $vuetify.breakpoint.mobile, 'padding-ios': $root.$data.platform.operatingSystem == 'ios' && $root.$data.platform.platform == 'web'}">
+      backgroundColor="primary" :class="{'mobile-container' : $vuetify.breakpoint.mobile, 'padding-ios': $root.$data.platform.operatingSystem == 'ios' && $root.$data.platform.platform == 'web' && !standalone && safari, 'padding-ios-wk': !standalone && !safari }">
       <NavBar 
         v-if="!$vuetify.breakpoint.mobile"  
         style="z-index: 1;"
@@ -33,6 +33,10 @@ export default class App extends Vue {
   theUser = this.$store.getters.user;
   appLoading = false;
   goDark = localStorage.getItem("dark");;
+  standalone = (window.navigator as any).standalone;
+  userAgent = window.navigator.userAgent.toLowerCase();
+  safari = /safari/.test( this.userAgent );
+  ios = /iphone|ipod|ipad/.test( this.userAgent );
   
   @Watch('$store.state.user')
   onUser(val: any) {
@@ -147,6 +151,12 @@ export default class App extends Vue {
   .padding-ios {
     .v-application--wrap {
       padding-bottom: 75px !important;
+    }
+    
+  }
+  .padding-ios-wk {
+    .v-application--wrap {
+      padding-bottom: 15px !important;
     }
     
   }

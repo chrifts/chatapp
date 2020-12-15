@@ -32,7 +32,7 @@
               </v-col>
               <v-col :cols="$vuetify.breakpoint.mobile ? 10 : 12" class="d-flex" style="justify-content: space-between">
                 
-                <span v-if="!$store.state.loadingChat" :class="{'text-left d-inline overline text--dark': $vuetify.breakpoint.mobile, 'text-left d-inline text-h5 text--primary': !$vuetify.breakpoint.mobile }">{{ chatSelected.profile.name + ' ' + chatSelected.profile.lastName  }}</span>
+                <span v-if="!$store.state.loadingChat && socket.connected" :class="{'text-left d-inline overline text--dark': $vuetify.breakpoint.mobile, 'text-left d-inline text-h5 text--primary': !$vuetify.breakpoint.mobile }">{{ chatSelected.profile.name + ' ' + chatSelected.profile.lastName  }}</span>
                 <v-progress-circular
                   v-else
                   indeterminate
