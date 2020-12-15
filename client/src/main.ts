@@ -24,7 +24,7 @@ async function auth() {
   store.commit("setMainLoading", true);
   const sessionToken = Vue.cookies.get('jwt');
   const refreshToken = Vue.cookies.get('refreshToken')
-  if(sessionToken) {
+  if(sessionToken && sessionToken != 'undefined') {
     const user = await axiosRequest('POST', urlApi + '/get-user', {}, {headers: {"x-auth-token": sessionToken}})
     if(user.data.email) {
       //join main socket namespace
@@ -55,6 +55,8 @@ async function auth() {
       }
     }
   } else {
+    Vue.cookies.remove('jwt')
+    Vue.cookies.remove('refreshToken')
     console.log('ELSE')
     store.commit("setUser", null);
     store.commit("setMainLoading", false);

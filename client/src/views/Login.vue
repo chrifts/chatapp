@@ -36,6 +36,14 @@
               >
               <!-- <v-btn color="error" @click="reset">Reset</v-btn> -->
             </v-card-actions>
+            <v-alert
+              v-model="alert"
+              border="left"
+              dismissible
+              color="warning darken-2"
+            > 
+                  {{ error.message ? error.message : error.error }}
+                </v-alert>
           </v-card>
         </v-flex>
       </v-layout>
@@ -54,6 +62,8 @@ import store from '../store/index'
 })
 export default class Login extends Vue {
   loading = this.$store.getters.mainLoading;
+  alert = false;
+  error: {} | string = ''; 
   public passwordShow = false;
   public valid = false;
   public email = "";
@@ -77,24 +87,28 @@ export default class Login extends Vue {
         email: this.email,
         password: this.password
       })
-      if(this.$root.$data.platform.operatingSystem == 'ios') {
-        document.cookie = "jwt="+user.data.accessToken+"; path=/"
-        document.cookie = "refreshToken="+user.data.refreshToken+"; path=/"
-      } else {
-        this.$cookies.set('jwt', user.data.accessToken, {
-          secure: false
-        });
-        this.$cookies.set('refreshToken', user.data.refreshToken, {
-          secure: false
-        });
-      }      
+      if(user.data.error) {
+        user.data.error == 'No user found!' ? user.data.error = 'Invalid credentials' : null;
+        this.alert = true;
+        this.error = user.data
+        store.commit("setMainLoading", false);
+        return;
+      }
+      console.log(user);
+      this.$cookies.set('jwt', user.data.accessToken, {
+        secure: false
+      });
+      this.$cookies.set('refreshToken', user.data.refreshToken, {
+        secure: false
+      });
+          
       this.$store.dispatch('SET_USER', user.data.user);
       
       router.push({ name: "Home" });
       return;
     } catch (error) {
-      alert('in login')
-      alert(error);
+      this.alert = true;
+      this.error = error;
       throw new Error(error);
     }
   }

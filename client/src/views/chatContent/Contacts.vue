@@ -119,12 +119,9 @@
                         
                       </v-btn>
                     </template>
-                    <v-list-item>
-                      <a title="You and your contact, cannot receive or send messages until unblock">Block contact</a>
-                    </v-list-item>
-                    <v-list-item>
-                      <a title="Delete contact.">Delete contact</a>
-                    </v-list-item>
+                    <template>
+                      <span class="light-blue--text lighten-5">In development</span>
+                    </template>
                   </v-menu>
                   
               </v-list-item>
@@ -292,7 +289,7 @@ export default class Contacts extends Vue {
           break;
         case 403:
           this.addingContact = false;
-          this.addContactResponseMessage = response.data.message;
+          this.addContactResponseMessage = response.data.error;
           this.alert = true;
           break;
         default:
