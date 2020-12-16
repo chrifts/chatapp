@@ -40,6 +40,7 @@
           z-index="1000"
           offset-y
           v-model="isOpen"
+          :class="{'top-fix-vmenu' : isWK}"
           >
           <template v-slot:activator="{ on, attrs }">
             <v-btn
@@ -67,10 +68,10 @@
               :key="notifType"
               :class="{'d-none': Object.keys(data).length < 1}"
             >
-              
+                
                 <!-- <span>{{parseNotificationType(notifType)}}</span> -->
                 
-                <v-list class="not-list">
+                <v-list style="width: 100%">
                   <!-- Loop users -->
                   <v-list-item
                     v-for="(el, ix) in data"
@@ -137,7 +138,8 @@ import SwitchSocket from '@/components/SwitchSocket.vue'
 })
 export default class NavBar extends Vue {
   @Model('change') socketStatus!: string;
-  
+  @Model('change') isWK!: any;
+
   NEW_MESSAGE = NEW_MESSAGE;
   CONTACT_REQUEST = CONTACT_REQUEST;
   isOpen = false;
@@ -349,6 +351,12 @@ export default class NavBar extends Vue {
   }
   .v-toolbar__content, .v-toolbar__extension {
     padding: 0 !important;
+  }
+  .v-menu__content {
+    .not-list {
+      padding-top: 20px !important;
+      background-color: var(--v-primary-base) !important;
+    }
   }
   .v-menu__content {
     background-color: var(--v-primary-base) !important;

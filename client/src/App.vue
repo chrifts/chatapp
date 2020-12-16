@@ -8,7 +8,7 @@
       />
       <router-view />
       
-      <NavBar v-if="$vuetify.breakpoint.mobile" style="z-index: 1;" />
+      <NavBar v-if="$vuetify.breakpoint.mobile" style="z-index: 1;" :isWK="isWK" />
     </v-app>
   
 </template>
@@ -37,7 +37,7 @@ export default class App extends Vue {
   userAgent = window.navigator.userAgent.toLowerCase();
   safari = /safari/.test( this.userAgent );
   ios = /iphone|ipod|ipad/.test( this.userAgent );
-  
+  isWK = (!this.standalone && !this.safari)
   @Watch('$store.state.user')
   onUser(val: any) {
    if(val) {
@@ -136,9 +136,9 @@ export default class App extends Vue {
   #app .v-bottom-navigation .v-btn {
     height: inherit !important;
   }
-  // .v-application--wrap {
-  //   background: linear-gradient(rgb(245, 245, 245), rgb(218, 218, 218));
-  // }
+  .v-application--wrap {
+    background: var(--v-primary-base)
+  }
   .mobile-container {
     .v-application--wrap {
       #main-view {
