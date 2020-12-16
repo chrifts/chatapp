@@ -156,7 +156,7 @@ export default class App extends Vue {
   }
   .padding-ios-wk {
     .v-application--wrap {
-      padding-bottom: 15px !important;
+      padding-top: 20px !important;
     }
     
   }

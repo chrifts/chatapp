@@ -26,7 +26,9 @@ export default class Profile extends Vue {
     return this.$store.getters.user;
   }
   async mounted() {
-    const formatter = new JSONFormatter({root: this.$root, isWK: ((window as any).webkit && (window as any).webkit.messageHandlers)}, 0, 
+    (window as any).webkit.messageHandlers.derp.postMessage(0);
+    //alert('ola')
+    const formatter = new JSONFormatter({root: this.$root }, 0, 
     {
       hoverPreviewEnabled: false,
       hoverPreviewArrayCount: 100,
