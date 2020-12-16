@@ -1,7 +1,10 @@
 <template>
-    <div class="footer-block" :class="{'footer-block__mobile':$vuetify.breakpoint.mobile }" >
+    <div class="footer-block" :class="{'footer-block__mobile':$vuetify.breakpoint.mobile }"  v-if="!loadingChat">
         <div class="f1">
             <v-menu
+                :close-on-content-click="false"
+                z-index="1000"
+                id="v-menu-footer"
                 v-if="!$vuetify.breakpoint.mobile"
                 top
                 :offset-y="true">
@@ -18,7 +21,8 @@
                     </v-btn>
                 </template>
 
-                <v-switch                
+                <v-switch
+                    color="green darken-3"           
                     :label="`Enter to send`"
                     @click="enterToSend = !enterToSend;"
                 />
@@ -63,7 +67,7 @@
     </div>
 </template>
 <script lang="ts">
-import { Component, Vue, Watch, Prop } from "vue-property-decorator";
+import { Component, Vue, Watch, Prop, Model } from "vue-property-decorator";
 import store from '../store/index';
 import { axiosRequest } from '../helpers';
 
@@ -77,7 +81,11 @@ interface NewMessage {
 @Component({
     name: 'ChatFoot',
 })
-export default class ChatFoot extends Vue {    
+export default class ChatFoot extends Vue {
+    
+    @Prop() chatWindowProp: any;
+    @Model('change') loadingChat!: any;
+
     inputFocused = false;
     chatWindow: boolean;
     chatSelected = this.selectedChat;
@@ -87,12 +95,12 @@ export default class ChatFoot extends Vue {
     api = (this.$root as any).urlApi;
 
 
-    @Prop() chatWindowProp: any;
-
+    
     @Watch("chatWindowProp")
     onWindowChange(val: any): any {
         this.chatWindow = this.chatWindowProp;
     }
+    
 
     get mydata() {
         return this.$store.getters.user;
@@ -149,6 +157,14 @@ export default class ChatFoot extends Vue {
     }
 }
 </script>
+<style lang="scss" scoped>
+.v-menu__content {
+    background-color: var(--v-primary-base) !important;
+    padding: 15px;
+    transform: translate(-4px, -11px);
+    box-shadow: unset;
+}
+</style>
 <style lang="scss">
 #texttype {
     background-color: #f5f5f5;
@@ -167,11 +183,8 @@ export default class ChatFoot extends Vue {
 .mb-android {
     margin-bottom: 150px;
 }
-.v-menu__content {
-    z-index: 100 !important;
-    padding: 10px;
-    background-color: white;
-}
+
+
 .footer-block{
 //   box-shadow: 0pt 0pt 9pt 0pt #b8b8b8;
   z-index: 1;

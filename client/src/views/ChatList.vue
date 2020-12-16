@@ -46,15 +46,13 @@ Vue.component('ResizeSensor', ResizeSensor)
 export default class ChatList extends Vue {
 
     @Prop() chatWindowProp: any;
-    
+    @Model('change') loadingChat!: any;
     @Model('change') message!: any
 
-    loadingChat = true;
-
-    @Watch('$store.state.loadingChat')
-    onLoadedChat(val: any) {
-        this.loadingChat = val;
-    }
+    // @Watch('$store.state.loadingChat')
+    // onLoadedChat(val: any) {
+    //     this.loadingChat = val;
+    // }
 
     @Watch('message')
     onNewMessage(msg: any) {
@@ -113,7 +111,8 @@ export default class ChatList extends Vue {
         if(selectedChat && selectedChat._id) {
             theContact = {_id: selectedChat._id}
             const res = await axiosRequest('POST', this.api + '/chat/get-messages', {chatId: selectedChat.chatId, contact: theContact}, {headers: {"x-auth-token": this.$cookies.get('jwt')}})
-            this.messages = res.data.messages  
+            this.messages = res.data.messages
+            this.$store.commit('readChat', selectedChat._id);  
             store.commit('setLoadingChat', false) 
         }
     }

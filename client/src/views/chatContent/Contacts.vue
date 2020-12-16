@@ -76,28 +76,58 @@
                     <v-btn 
                       :loading="item.loading"
                       :disabled="item.loading"
-                      @click="handleContactRequest(item._id, 'RESEND', index)">resend</v-btn>
+                      elevation="2"
+                      class="px-2 mr-1 mt-2"
+                      outlined
+                      small
+                      @click="handleContactRequest(item._id, 'RESEND', index)">resend
+                        <v-icon>
+                          mdi-arrow-top-right
+                        </v-icon>
+                      </v-btn>
                     <v-btn 
                       :loading="item.loading"
                       :disabled="item.loading"
-                      @click="handleContactRequest(item._id, 'RESEND_CANCEL', index)">cancel</v-btn>
+                      elevation="2"
+                      class="px-2 mr-1 mt-2"
+                      outlined
+                      small
+                      @click="handleContactRequest(item._id, 'RESEND_CANCEL', index)">cancel
+                        <v-icon>
+                          mdi-close
+                        </v-icon>
+                      </v-btn>
                   </div>
                   <v-list-item-subtitle v-if="item.status == 'connecteds'"> {{item.lastMessage ? item.lastMessage.message : 'Start chat'}} </v-list-item-subtitle>
-
-                  <v-btn 
-                    v-if="item.status == 'requested_by'" 
-                    @click="handleContactRequest(item._id, 'ACCEPTED', index)"
-                    elevation="2"
-                    icon
-                    outlined
-                  >accept</v-btn>
-                  <v-btn 
-                    v-if="item.status == 'requested_by'" 
-                    elevation="2"
-                    icon
-                    outlined
-                    @click="handleContactRequest(item._id, 'REJECTED', index)"
-                  >reject</v-btn>
+                  <v-sheet color="primary">
+                    <v-btn 
+                      v-if="item.status == 'requested_by'" 
+                      @click="handleContactRequest(item._id, 'ACCEPTED', index)"
+                      elevation="2"
+                      class="px-2 mr-1 mt-2"
+                      outlined
+                      small
+                    >
+                      accept
+                      <v-icon>
+                        mdi-check
+                      </v-icon>
+                    </v-btn>
+                    
+                    <v-btn 
+                      v-if="item.status == 'requested_by'" 
+                      elevation="2"
+                      class="px-2 ml-1 mt-2"
+                      outlined
+                      small
+                      @click="handleContactRequest(item._id, 'REJECTED', index)"
+                    >
+                    cancel
+                      <v-icon>
+                        mdi-close
+                      </v-icon>
+                    </v-btn>
+                  </v-sheet>
                 </v-list-item-content>
                 <v-menu 
                   offset-y
@@ -210,7 +240,7 @@ export default class Contacts extends Vue {
     this.contacts[index].active = true
     this.contacts = [...this.contacts]
     this.$emit('chatSelected', item)
-    this.$store.commit('readChat', item._id);
+    //this.$store.commit('readChat', item._id);
   }
 
   orderBy(array, element, type) {
@@ -307,8 +337,13 @@ export default class Contacts extends Vue {
   }
 }
 </script>
+<style lang="scss" scoped>
+.v-menu__content {
+  background-color: var(--v-primary-base);
+  padding: 10px;
+}
+</style>
 <style lang="scss">
-
 .v-list {
   transition: all 0.9s ease-out;
 }

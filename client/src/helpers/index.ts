@@ -2,6 +2,7 @@ import axios from "axios";
 import { MAIN_APP_CONTACT_HANDLER, MAIN_APP_MESSAGES } from '../constants'
 import '@capacitor-community/http';
 import { Capacitor, Plugins } from '@capacitor/core';
+import store from '../store'
 
 async function axiosRequest(type: string, url: string, postData?: {}, headers?: {}) {
     
@@ -25,6 +26,7 @@ async function axiosRequest(type: string, url: string, postData?: {}, headers?: 
     }
     return data;
 }
+
 
 const emailRegex = (email: string) => {
     if(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email)){
@@ -58,8 +60,10 @@ function defaultSocketEvents (socket: any, opts?: {context?: string, store?: any
     socket.on('ping', function(data) {
         console.log('ping received');
         setTimeout(() => {
-            socket.emit('pong', data);
-            console.log('pong emited');
+            if(store.getters.user) {
+                socket.emit('pong', data);
+                console.log('pong emited');
+            }
         }, 25000);
     });
     socket.on('connect_error', (error)=>{

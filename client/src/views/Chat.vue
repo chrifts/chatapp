@@ -19,7 +19,7 @@
       <v-col :cols="$vuetify.breakpoint.mobile ? 12 : 8" style="padding: 0 !important">
         <div class="chat-main-view">
           <div class="center_content" v-if="!chatSelected">
-            <p>Choose a chat</p>
+            <p class="text--primary">Choose a chat</p>
           </div>
           <div class="header-block" v-if="chatSelected">
             <v-row>
@@ -55,12 +55,14 @@
             </v-row>
             
           </div>
-          <ChatList v-if="chatSelected " 
+          <ChatList v-if="chatSelected" 
             :chatWindowProp="chatWindow"
+            :loadingChat="loading"
             :message="newMessage ? newMessage : null"
           />
           <ChatFoot v-if="chatSelected && mainSocketStatus == 'connected'" 
             :chatWindowProp="chatWindow"
+            :loadingChat="loading"
             @myNewMsg="myNewMsg" 
           />
         </div>
@@ -92,7 +94,7 @@ Vue.use(VueScrollTo)
 export default class Chat extends Vue {
   chatSelected: any | boolean = false;
   chatWindow = false;
-  loading = false;
+  loading = true;
   scrollOpts = {
     container: '.chat-list-block',
     element: '.bubble:last-child',
@@ -108,6 +110,11 @@ export default class Chat extends Vue {
   socket: boolean | any = false;
   api = (this.$root as any).urlApi;
   newMessage = null;
+
+  @Watch('$store.state.loadingChat')
+  onLoadedChat(val: any) {
+      this.loading = val;
+  }
 
   mainSocketStatus = this.getSocketStatus;
   @Watch('$store.state.mainAppSocketStatus')
@@ -187,8 +194,9 @@ export default class Chat extends Vue {
     this.chatSelected = selected;
   }
 
-  beforeDestroy(){
+  async beforeDestroy(){
     console.log('unmout chat')
+    const res = await axiosRequest('POST', (this.$root as any).urlApi + '/user/read-notifications', {notifications: this.$store.getters.mainNotifs}, {headers:{"x-auth-token":this.$cookies.get('jwt')}})
     this.$store.commit('setSelectedChat', null);
     this.$store.commit('setLoadingChat', false);
     if(this.socket) {
@@ -305,6 +313,7 @@ export default class Chat extends Vue {
     flex-direction: column;
     height: 100%;
     transition: background-color .3s;
+    background-color: var(--v-secondary-base)
   }
   .header-block {
     // box-shadow: 0pt 0pt 9pt 0pt #b8b8b8;

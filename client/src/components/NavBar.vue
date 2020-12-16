@@ -2,8 +2,8 @@
   <div>
     <!-- DESKTOP -->
     <v-bottom-navigation 
-      :background-color="color"
-      :class="{'d-none' : chatSelected && $vuetify.breakpoint.mobile }" backgroundColor="primary">
+      background-color="secondary--lighten2"
+      :class="{'d-none' : chatSelected && $vuetify.breakpoint.mobile }">
       <template v-if="loggedIn && !loading && !$vuetify.breakpoint.mobile">
         <v-btn  color="icons" text :to="'/'">
           {{appName}}
@@ -13,13 +13,13 @@
           inline
           dot
           :color="mainSocketStatus == 'connected' ? 'green' : 'red'"
-        >
+          >
           <span  class="text-subtitle-1 text--disabled" title='Main socket status'>
             {{mainSocketStatus}}  
           </span>
         </v-badge>
       </template>  
-      <SwitchSocket v-if="loggedIn"/>
+      <SwitchSocket v-if="loggedIn && !$vuetify.breakpoint.mobile"/>
       <v-spacer v-if="!$vuetify.breakpoint.mobile"></v-spacer>
       <template v-if="!loggedIn && !loading" class="v-bottom-navigation">
         <v-btn
@@ -33,10 +33,12 @@
           <v-icon center color="icons">{{ item.icon }}</v-icon>
         </v-btn>
       </template>
-
+      <!-- Notifications -->
       <template v-if="loggedIn && !loading"  class="v-bottom-navigation">
-
-        <v-menu offset-y
+        <v-menu
+          :close-on-content-click="false"
+          z-index="1000"
+          offset-y
           v-model="isOpen"
           >
           <template v-slot:activator="{ on, attrs }">
@@ -74,12 +76,15 @@
                     v-for="(el, ix) in data"
                     :key="ix"
                   >
-                    <div v-if="el.length > 0" :class="{'unread' : el[0].status == 'unread'}">
-                      <v-list-item-title v-if="notifType == NEW_MESSAGE">{{ el.length }} {{el.length > 1 ? 'messages' : 'message'}} from </v-list-item-title>
+                  {{debugFromTempate(el)}}
+                    <div v-if="el.length > 0" :class="{'unread' : el[(el.length - 1)].status == 'unread', 'read' : el[(el.length - 1)].status == 'read'}">
+                      <span v-if="el[(el.length - 1)].status == 'unread'" class="badge-notif"> <v-icon x-small color="red">mdi-circle</v-icon> </span>
+                      <v-list-item-title v-if="notifType == NEW_MESSAGE">{{ el.length }} new {{el.length > 1 ? 'messages' : 'message'}} from 
+                      </v-list-item-title>
                       <v-list-item-title v-if="notifType == CONTACT_REQUEST"> 
                         <!-- <span v-if="el[0].message.status == 'connecteds'"> accepted from</span> -->
-                        <!-- {{debugFromTempate(el)}} -->
-                        <!-- {{el[0].message.status}} -->
+                        
+                        <!-- {{el[0].status}} -->
                         {{parseNotificationType(el[0].message.status)}} 
                       </v-list-item-title>
                       <v-list-item-subtitle>{{ el[0].extraDataFrom.email }}</v-list-item-subtitle>  
@@ -90,6 +95,7 @@
               
             </v-list-item>
           </v-list>
+          <span v-else> No notifications</span>
         </v-menu>
         <v-btn color="icons" text @click="changeTheme">
           <v-icon center color="icons">
@@ -99,11 +105,6 @@
         <v-btn color="icons" text v-for="item in itemsAuth" :key="item.title" :to="item.link">
           {{ item.title }}
           <v-icon center color="icons">{{ item.icon }}</v-icon>
-        </v-btn>
-        
-        <v-btn text color="icons" @click="logout" v-if="!$vuetify.breakpoint.mobile">
-          Logout
-          <v-icon color="icons" center>exit_to_app</v-icon>
         </v-btn>
       </template>  
     </v-bottom-navigation>
@@ -137,7 +138,6 @@ import SwitchSocket from '@/components/SwitchSocket.vue'
 export default class NavBar extends Vue {
   @Model('change') socketStatus!: string;
   
-  color = (this as any).$vuetify.theme.themes.light.primary;
   NEW_MESSAGE = NEW_MESSAGE;
   CONTACT_REQUEST = CONTACT_REQUEST;
   isOpen = false;
@@ -251,7 +251,7 @@ export default class NavBar extends Vue {
         type = 'User has resend contact request'
         break;
       case 'connecteds':
-        type = 'New contact!'
+        type = 'You have a new contact!'
         break;
       case 'rejected':
         type = 'Contact has rejected your request'
@@ -262,16 +262,6 @@ export default class NavBar extends Vue {
     return type;
   }
 
-  public logout() {
-    axiosRequest('POST', (this.$root as any).urlApi + '/auth/logout', {refreshToken: this.$cookies.get('refreshToken')} )
-    store.commit("setMainLoading", true);
-    if(this.$socket.client) {
-      this.$socket.client.disconnect();
-    }
-    this.$store.dispatch("LOGOUT_USER");
-    this.$cookies.remove('jwt');
-    this.$cookies.remove('refreshToken');
-  }
   @Watch('$store.state.mainLoading')
   onMainLoading(val: any) {
     this.loading = val;
@@ -318,6 +308,11 @@ export default class NavBar extends Vue {
 }
 </script>
 <style lang="scss">
+.badge-notif {
+  position: absolute;
+  left: 10px;
+  top: 25px;
+}
 .dotPosition .v-badge__wrapper span {
   position: relative;
   top: 19px !important;
@@ -330,10 +325,21 @@ export default class NavBar extends Vue {
 <style lang="scss" scoped>
 
 .unread {
-  background-color: #cbcbcb;
-  border-radius: 5px;
-  padding: 6px 10px;
+  background-color: var(--v-secondary-base);
+  padding: 20px;
+  width: 100%;
 }
+.read {
+  padding: 20px;
+  width: 100%;
+}
+.v-menu__content {
+    .not-list {
+      .v-list-item {
+        padding: 0 !important;
+      }
+    }
+  }
 @media (max-width: 599px) {
   .v-toolbar__content, .v-toolbar__extension, .v-toolbar__items {
     width: 100% !important;
@@ -345,6 +351,7 @@ export default class NavBar extends Vue {
     padding: 0 !important;
   }
   .v-menu__content {
+    background-color: var(--v-primary-base) !important;
     max-width: 100%;
     width: 100%;
     left: 0 !important;
@@ -354,8 +361,5 @@ export default class NavBar extends Vue {
     border-radius: 0 !important;
     box-shadow: none !important;
   }
-  // .v-list-item {
-  //   display: block !important;
-  // }
 }
 </style>

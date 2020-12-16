@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  
     <v-app 
       backgroundColor="primary" :class="{'mobile-container' : $vuetify.breakpoint.mobile, 'padding-ios': $root.$data.platform.operatingSystem == 'ios' && $root.$data.platform.platform == 'web' && !standalone && safari, 'padding-ios-wk': !standalone && !safari }">
       <NavBar 
@@ -10,7 +10,7 @@
       
       <NavBar v-if="$vuetify.breakpoint.mobile" style="z-index: 1;" />
     </v-app>
-  </div>
+  
 </template>
 
 <script lang="ts">
@@ -25,7 +25,7 @@ import ifvisible from 'ifvisible.js'
 @Component({
   name: 'App',
   components: {
-    NavBar
+    NavBar,
   }
 })
 export default class App extends Vue {
@@ -33,7 +33,7 @@ export default class App extends Vue {
   theUser = this.$store.getters.user;
   appLoading = false;
   goDark = localStorage.getItem("dark");;
-  standalone = (window.navigator as any).standalone;
+  standalone = (window.navigator as any).standalone === undefined ? null : (window.navigator as any).standalone;
   userAgent = window.navigator.userAgent.toLowerCase();
   safari = /safari/.test( this.userAgent );
   ios = /iphone|ipod|ipad/.test( this.userAgent );
@@ -130,6 +130,9 @@ export default class App extends Vue {
 }
 </script>
 <style lang="scss">
+  html {
+    overflow: hidden;
+  }
   #app .v-bottom-navigation .v-btn {
     height: inherit !important;
   }

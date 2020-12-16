@@ -1,12 +1,16 @@
 <template>
-    <v-switch color="success" 
-        :loading="loading"
-        :disabled="loading"
-        value
-        @click="clicked(switchSocket)"
-        :input-value="switchSocket"
-        v-model="switchSocket"/>
+    <div class="switch-mobile">
+        <v-switch 
+            color="success" 
+            :loading="loading"
+            :disabled="loading"
+            value
+            @click="clicked(switchSocket)"
+            :input-value="switchSocket"
+            v-model="switchSocket"/>
+    </div>
 </template>
+
 <script lang="ts">
 
 import Vue from "vue";
@@ -36,6 +40,11 @@ export default class SwitchSocket extends Vue{
         }
     }
 
+    mounted() {
+        this.switchSocket = this.mainAppSocketStatus == 'connected' ? true : false;
+        this.loading = false;
+    }
+
     clicked(val){
         if(val) {
             this.$store.commit('setMainAppSocketStatus', 'connecting...')
@@ -44,18 +53,17 @@ export default class SwitchSocket extends Vue{
             this.$root.$emit('disconnectAllSockets');
         }
     }
-
-    // @Watch('switchSocket')
-    // onSwitchSocket(val){
-    //     if(this.debugSwitch) {
-    //         this.loading = true;
-            
-    //     }   
-    // }
 }
 </script>
+
 <style lang="scss" scoped>
 .v-input--selection-controls {
     margin-top: 12px;
 }
+.switch-mobile {
+    display: block;
+    width: fit-content;
+    margin: 0 auto;
+}
+
 </style>
