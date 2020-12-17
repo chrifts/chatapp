@@ -42,15 +42,13 @@
                 </v-avatar>
                 <v-card-actions class="justify-center">
                   <v-spacer v-if="!$vuetify.breakpoint.mobile"></v-spacer>
-                  <v-btn icon>
+                  <v-btn target="_blank" href="https://github.com/chrifts" icon>
                     <v-icon>mdi-github</v-icon>
                   </v-btn>
-                  <v-btn icon>
+                  <v-btn target="_blank" href="https://www.linkedin.com/in/cristian-schweizer-full-stack-developer/" icon>
                     <v-icon>mdi-linkedin</v-icon>
                   </v-btn>
-                  <v-btn icon>
-                    <v-icon>mdi-share-variant</v-icon>
-                  </v-btn>
+                  
                 </v-card-actions>
               </div>   
             </div>
