@@ -18,10 +18,13 @@
             <div class="d-flex justify-space-between"
             :class="{'flex-wrap' : $vuetify.breakpoint.mobile, 'flex-no-wrap' : $vuetify.breakpoint.mobile}">
               <div>
-                <v-card-title>
-                 <p class="text-h5 mb-0">Cristihan Schweizer</p> 
-                 <br>
-                 <p class="text-button mb-0">Full Stack Web Developer</p> 
+                <v-card-title class="pb-0">
+                 <p class="text-h5 d-block mb-0">Cristihan Schweizer</p> 
+                 
+                </v-card-title>
+                <v-card-title class="pt-0">
+                 
+                 <p class="text-h6 d-block mb-0">Full Stack Web Developer</p> 
                 </v-card-title>
 
                 <v-card-subtitle class="text-left pb-1 mt-1" v-text="'Berlin, Germany'"></v-card-subtitle>
