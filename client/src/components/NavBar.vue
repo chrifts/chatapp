@@ -121,6 +121,12 @@
         color="red darken-2"
       ></v-progress-linear>
       Loading...
+      <div v-if="timePassed">
+        Stuck?
+        <Logout />
+
+      </div>
+      
     </div>    
   </div>
 </template>
@@ -133,11 +139,13 @@ import { Watch, Prop, Model } from 'vue-property-decorator';
 import { CONTACT_REQUEST, NEW_MESSAGE } from "../constants";
 import { axiosRequest } from '../helpers';
 import SwitchSocket from '@/components/SwitchSocket.vue'
+import Logout from '@/components/Logout.vue'
 
 @Component({
   name: 'NavBar',
   components: {
     SwitchSocket,
+    Logout
   }
 })
 export default class NavBar extends Vue {
