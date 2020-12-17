@@ -98,16 +98,20 @@
           </v-list>
           <span v-else> No notifications</span>
         </v-menu>
-        <v-btn color="icons" text @click="changeTheme">
-          <v-icon center color="icons">
-            mdi-theme-light-dark
-          </v-icon>
-        </v-btn>
         <v-btn color="icons" text v-for="item in itemsAuth" :key="item.title" :to="item.link">
           {{ item.title }}
           <v-icon center color="icons">{{ item.icon }}</v-icon>
         </v-btn>
       </template>  
+      <v-btn color="icons" text @click="changeTheme">
+        <v-icon center color="icons">
+          mdi-theme-light-dark
+        </v-icon>
+      </v-btn>
+      <v-btn color="icons" text  to="cristihanschweizer" v-if="!$vuetify.breakpoint.mobile || !loggedIn">
+          Developer
+          <v-icon center color="icons">mdi-account-circle</v-icon>
+      </v-btn>
     </v-bottom-navigation>
     <div v-if="mainLoading">
       <v-progress-linear
@@ -182,6 +186,7 @@ export default class NavBar extends Vue {
         icon: "send",
         link: "/login"
       }
+      
     ];
     return menuItems;
   }
@@ -204,7 +209,7 @@ export default class NavBar extends Vue {
         title: "Profile",
         icon: "mdi-account",
         link: "/profile"
-      },
+      }
     ];
     return menuItems;
   }

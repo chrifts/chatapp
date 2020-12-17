@@ -6,6 +6,7 @@
         v-if="!$vuetify.breakpoint.mobile"  
         style="z-index: 1;"
       />
+      <Dialog />
       <router-view />
       
       <NavBar v-if="$vuetify.breakpoint.mobile" style="z-index: 1;" :isWK="isWK" />
@@ -21,11 +22,13 @@ import NavBar from "@/components/NavBar.vue";
 import { axiosRequest, getCookies } from './helpers';
 import store from './store/index'
 import ifvisible from 'ifvisible.js'
+import Dialog from '@/components/Dialog.vue'
 
 @Component({
   name: 'App',
   components: {
     NavBar,
+    Dialog
   }
 })
 export default class App extends Vue {
@@ -38,6 +41,7 @@ export default class App extends Vue {
   safari = /safari/.test( this.userAgent );
   ios = /iphone|ipod|ipad/.test( this.userAgent );
   isWK = (!this.standalone && !this.safari)
+  
   @Watch('$store.state.user')
   onUser(val: any) {
    if(val) {

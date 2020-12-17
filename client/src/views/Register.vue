@@ -3,9 +3,9 @@
   <v-container fluid fill-height v-if="!loading">
     <v-layout align-center justify-center>
       <v-flex xs12 sm8 md4>
-        <v-card class="elevation-12 mt-10">
+        <v-card class="elevation-12">
           <v-toolbar color="primary">
-            <v-toolbar-title>Register form</v-toolbar-title>
+            <v-toolbar-title>Register</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
             <v-form ref="form" v-model="valid" lazy-validation>
@@ -46,21 +46,24 @@
                 label="Confirm Password"
                 :rules="passwordRules"
                 required
-                :append-icon="
-                  confirmPasswordShow ? 'visibility' : 'visibility_off'
-                "
+                :append-icon="confirmPasswordShow ? 'visibility' : 'visibility_off'"
                 :type="confirmPasswordShow ? 'text' : 'password'"
                 @click:append="confirmPasswordShow = !confirmPasswordShow"
               ></v-text-field>
+              <v-checkbox
+              inline
+              :class="{'required' : requireCheck}"
+              :label="requireCheck ? textConsent + ' Consent is required' : textConsent"
+              v-model="checkbox" 
+            >{{textConsent}}</v-checkbox>
             </v-form>
           </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn :disabled="!valid" color="success" @click="register"
+          <v-btn icon class="mx-1" small outlined @click="lang = 'ES'">ES</v-btn>
+          <v-btn icon class="mx-1" small outlined @click="lang = 'EN'">EN</v-btn>
+          <br>
+          <v-btn :disabled="!valid" color="success" class="my-3" @click="register"
               >Register</v-btn
             >
-            <!-- <v-btn color="error" @click="reset">Reset</v-btn> -->
-          </v-card-actions>
         </v-card>
       </v-flex>
     </v-layout>
@@ -71,7 +74,7 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import { Watch } from 'vue-property-decorator';
+import { Watch, Model, Prop } from 'vue-property-decorator';
 import store from '../store/index'
 import { axiosRequest } from '../helpers/index'
 import router from '../router';
@@ -99,14 +102,61 @@ export default class Register extends Vue {
   public passwordRules = [
     (v: any) => !!v || "Password and Confirm password Required"
   ];
+  lang = 'EN'
+  checkbox = false;
+  textConsent = this.textC(this.lang)
+  requireCheck = false;
+  
+  @Watch('checkbox')
+  onCheckChange(val) {
+    if(val == true) {
+      this.requireCheck = false
+    } else {
+      this.requireCheck = true
+    }
+  }
+  
+  @Watch('lang')
+  onChange(val) {
+    this.textConsent = this.textC(val)
+  }
 
+  mounted() {
+    const theme = localStorage.getItem("dark");
+    if (theme) {
+        if (theme == "true") {
+            this.$vuetify.theme.dark = true;
+        } else {
+            this.$vuetify.theme.dark = false;
+        }
+    }
+  }
+
+  textC(lang) {
+    let text = '';
+    switch (lang) {
+      case 'ES':
+        text = 'Confirmo que los datos ingresados son ficticios y no he ingresado ningún dato personal. El uso de esta web es a modo de prueba.'
+        break;
+      case 'EN':
+        text = 'I confirm that the data entered are fictitious and I have not entered any personal data. The usage of this web is for testing purpose.'
+        break;
+      default:
+        text = 'Confirmo que los datos ingresados son ficticios a modo de prueba y no he ingresado ningún dato personal'
+        break;
+    }
+    return text;
+  }
   public register() {
     if (
       (this.$refs.form as Vue & { validate: () => boolean }).validate() &&
-      this.confirmPassword == this.password
+      this.confirmPassword == this.password &&
+      this.checkbox
     ) {
       console.log("Form is valid");
       this.createUser();
+    } else {
+      this.requireCheck = true;
     }
   }
   
@@ -137,5 +187,10 @@ export default class Register extends Vue {
 <style lang="scss">
   .mt-10 {
     margin-top: 15rem;
+  }
+  .required {
+    .v-label{
+      color: red !important;
+    }
   }
 </style>

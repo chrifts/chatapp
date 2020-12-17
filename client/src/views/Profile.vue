@@ -5,18 +5,23 @@
         mdi-account-circle
       </v-icon>
     </v-avatar>
-    <h1>{{ user.profile.name ? user.profile.name + ' ' + user.profile.lastName : ''  }}</h1>
+    <h1 class="text--primary">{{ user.profile.name ? user.profile.name + ' ' + user.profile.lastName : ''  }}</h1>
     <v-container>
       <v-row >
-        <v-col cols=12>
-          <Logout />
-        </v-col>
         <v-col cols=12 v-if="$vuetify.breakpoint.mobile">
-          <span class="d-inline"> connection to server: {{socketStatus}} </span>
+          <span class="d-inline text--primary"> connection to server: {{socketStatus}} </span>
           <div>
             <SwitchSocket />
           </div>
-          
+        </v-col>
+        <v-col cols=12>
+          <Logout />
+        </v-col>
+        <v-col cols=12>
+          <v-btn color="icons" text  to="cristihanschweizer" v-if="$vuetify.breakpoint.mobile">
+          Developer info
+            <v-icon center color="icons">mdi-account-circle</v-icon>
+          </v-btn>
         </v-col>
       </v-row>
     </v-container>

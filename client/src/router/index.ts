@@ -5,6 +5,7 @@ import Chat from "../views/Chat.vue";
 import Register from "../views/Register.vue";
 import Login from "../views/Login.vue";
 import Profile from "../views/Profile.vue";
+import Developer from "../views/Developer.vue";
 import store from "../store";
 
 Vue.use(VueRouter);
@@ -42,7 +43,13 @@ const routes: Array<RouteConfig> = [
     path: "/after-login",
     redirect: { name: "Home" },
     name: "After-login"
-  }
+  },
+  {
+    path: "/cristihanschweizer",
+    name: "Developer",
+    component: Developer
+  },
+
 ];
 
 const router = new VueRouter({
@@ -53,7 +60,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (store.getters.user == null) {
-    to.name == "Register" || to.name == "Login"
+    to.name == "Register" || to.name == "Login" || to.name == "Developer"
       ? next()
       : next({ name: "Login" });
   } else {

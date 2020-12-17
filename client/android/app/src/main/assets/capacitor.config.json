@@ -10,5 +10,8 @@
       "launchShowDuration": 0
     }
   },
-  "cordova": {}
+  "cordova": {},
+  "server" : {
+    "url":"https://www.chatapp.website"
+  }
 }

@@ -35,7 +35,7 @@
                   v-model="alert"
                   border="left"
                   dismissible
-                  :color="addContactResponseMessage == 'Success' ? 'green lighten-2' : 'red lighten-2' "> 
+                  :color="addContactResponseMessage == 'Success' ? 'green lighten-2' : 'red lighten-2'"> 
                   {{ addContactResponseMessage }}
                 </v-alert>
               </v-expansion-panel-content>
@@ -67,8 +67,7 @@
                   overlap
                 ></v-badge>
                 <v-list-item-content class="text--primary">
-                  <v-list-item-title v-html="item.email" />
-                                    
+                  <v-list-item-title v-html="item.profile.name +' '+ item.profile.lastName" />
                   <v-list-item-subtitle v-if="item.status == 'requested_by'"  > New contact request </v-list-item-subtitle>
                   <v-list-item-subtitle v-if="item.status == 'sent'"> Pending </v-list-item-subtitle>
                   <div v-else-if="item.status == 'rejected_by_contact'">

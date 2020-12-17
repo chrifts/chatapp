@@ -14,8 +14,6 @@ import { defaultSocketEvents, customSocketEvents } from './helpers';
 dotenv.config();
 import { Plugins } from '@capacitor/core';
 import '@capacitor-community/http';
-
-
 let app: Vue;
 const urlApi: string = process.env.NODE_ENV == 'development' ? process.env.VUE_APP_API! : process.env.VUE_APP_API_PROD!;
 const socketUrl: string = process.env.NODE_ENV == 'development' ? process.env.VUE_APP_SOCKET_URL! : process.env.VUE_APP_SOCKET_URL_PROD!;
