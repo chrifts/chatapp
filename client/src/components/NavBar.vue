@@ -289,7 +289,16 @@ export default class NavBar extends Vue {
     } else {
       this.timePassed = false;
     }
-    
+  }
+
+  mounted() {
+    if(this.mainLoading) {
+      setTimeout(() => {
+        this.timePassed = true;
+      }, 15000);
+    } else {
+      this.timePassed = false;
+    }
   }
 
   @Watch('$store.state.mainNotifications', { deep : true, immediate: true })
