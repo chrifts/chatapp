@@ -116,17 +116,14 @@
     <div v-if="mainLoading">
       <v-progress-linear
         height="8"
-        v-if="mainLoading"
         indeterminate
         color="red darken-2"
       ></v-progress-linear>
       Loading...
       <div v-if="timePassed">
         Stuck?
-        <Logout />
-
+        <Logout :reload="true"/>
       </div>
-      
     </div>    
   </div>
 </template>
@@ -285,7 +282,7 @@ export default class NavBar extends Vue {
     if(val) {
       setTimeout(() => {
         this.timePassed = true;
-      }, 15000);
+      }, 8000);
     } else {
       this.timePassed = false;
     }
@@ -295,7 +292,7 @@ export default class NavBar extends Vue {
     if(this.mainLoading) {
       setTimeout(() => {
         this.timePassed = true;
-      }, 15000);
+      }, 8000);
     } else {
       this.timePassed = false;
     }

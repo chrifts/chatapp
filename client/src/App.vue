@@ -93,7 +93,7 @@ export default class App extends Vue {
 
   mounted(){
     ifvisible.on('focus', ()=> {
-      if(!this.$socket.client.connected) {
+      if(this.$socket && !this.$socket.client.connected) {
         this.appInit('focus');
       }
     })      

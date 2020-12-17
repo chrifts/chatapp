@@ -204,14 +204,19 @@ export default new Vuex.Store({
       router.push("/");
         
     },
-    LOGOUT_USER({ commit }) {
+    LOGOUT_USER({ commit }, payload) {
       commit('setFirstLoad', false);
       commit("setStatus", "busy");
       commit("setUser", null);
       commit('updateNotifications', 'logout')
       commit("SOCKET_setContacts", []);
       commit("setStatus", "success");
-      router.push("/login");
+      if(payload) {
+        location.reload()
+      } else {
+        router.push("/");
+      }
+      
     }
   },
   getters: {

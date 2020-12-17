@@ -1,13 +1,58 @@
 <template>
-  <div class="profile" id="main-view">
-    <v-avatar color="indigo" class="mt-5" size="70" >
+  <div :class="{'height' : $vuetify.breakpoint.mobile, 'heightDesktop':!$vuetify.breakpoint.mobile}" id="main-view">
+    <!-- <v-avatar color="indigo" class="mt-5" size="70" >
       <img src="https://media-exp1.licdn.com/dms/image/C4D35AQFVZliIFSUTEQ/profile-framedphoto-shrink_400_400/0/1605282359140?e=1608300000&v=beta&t=woBcUkkHRSuIE91TL_snDNFPv7T-ivBXI-Aoi7-jUsM" alt="">
     </v-avatar>
-    <h3 class="text--primary">Cristihan Schweizer</h3>
+    <h3 class="text--primary">Cristihan Schweizer</h3> -->
     <v-container>
       <v-row >
         <v-col v-if="!$vuetify.breakpoint.mobile" md=3></v-col>
         <v-col xs=12 md=6>
+          <!-- Contact -->
+          <v-card
+            color="gray"
+            dark
+            class="mb-3"
+            
+          >
+            <div class="d-flex justify-space-between"
+            :class="{'flex-wrap' : $vuetify.breakpoint.mobile, 'flex-no-wrap' : $vuetify.breakpoint.mobile}">
+              <div>
+                <v-card-title>
+                 <p class="text-h5 mb-0">Cristihan Schweizer</p> 
+                 <br>
+                 <p class="text-button mb-0">Full Stack Web Developer</p> 
+                </v-card-title>
+
+                <v-card-subtitle class="text-left pb-1 mt-1" v-text="'Berlin, Germany'"></v-card-subtitle>
+                <p class="text-caption text-left ml-4 mb-1">+49 157 3392 1251</p>
+                <p class="text-caption text-left ml-4">schweizercristian@gmail.com</p>                
+              </div>
+              <div :class="{'d-block w-100' : $vuetify.breakpoint.mobile}">
+                <v-avatar
+                  class="ma-3"
+                  size="125"
+                  tile
+                >
+                  <v-img src="../assets/img.jpg"></v-img>
+                  
+                </v-avatar>
+                <v-card-actions class="justify-center">
+                  <v-spacer v-if="!$vuetify.breakpoint.mobile"></v-spacer>
+                  <v-btn icon>
+                    <v-icon>mdi-github</v-icon>
+                  </v-btn>
+                  <v-btn icon>
+                    <v-icon>mdi-linkedin</v-icon>
+                  </v-btn>
+                  <v-btn icon>
+                    <v-icon>mdi-share-variant</v-icon>
+                  </v-btn>
+                </v-card-actions>
+              </div>   
+            </div>
+            
+          </v-card>
           <!-- Experience -->
           <v-expansion-panels>
             <v-expansion-panel>
@@ -15,7 +60,7 @@
                 Experience
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <v-card-text :class="{'height' : $vuetify.breakpoint.mobile}">
+                <v-card-text>
                   <v-timeline
                     align-top
                     dense
@@ -84,7 +129,10 @@ import Component from "vue-class-component";
   name: 'Developer',
 })
 export default class Developer extends Vue {
-
+  contact = {
+    name: 'Cristihan Schweizer',
+    img: "../assets/img.jpg"
+  }
   experiences = [
     {
       title: 'Full stack web developer', 
@@ -155,5 +203,12 @@ export default class Developer extends Vue {
 .height {
   height: calc(100vh - 397px);
   overflow-y: scroll;
+}
+.heightDesktop {
+  height: 100%;
+  overflow-y: scroll;
+}
+.w-100 {
+  width: 100%;
 }
 </style>

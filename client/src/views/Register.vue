@@ -1,6 +1,6 @@
 <template>
 
-  <v-container fluid fill-height v-if="!loading">
+  <v-container fluid :fill-height="$vuetify.breakpoint.mobile ? false : true" v-if="!loading" style="overflow-y: scroll;">
     <v-layout align-center justify-center>
       <v-flex xs12 sm8 md4>
         <v-card class="elevation-12">
