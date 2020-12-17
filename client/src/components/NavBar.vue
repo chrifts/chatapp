@@ -152,6 +152,7 @@ export default class NavBar extends Vue {
   @Model('change') socketStatus!: string;
   @Model('change') isWK!: any;
 
+  timePassed = false;
   NEW_MESSAGE = NEW_MESSAGE;
   CONTACT_REQUEST = CONTACT_REQUEST;
   isOpen = false;
@@ -181,6 +182,7 @@ export default class NavBar extends Vue {
   onSocketStatusChange(ss: any) {
     this.mainSocketStatus = ss;
   }
+  
 
   get itemsNoAuth() {
     const menuItems = [
@@ -280,6 +282,14 @@ export default class NavBar extends Vue {
   @Watch('$store.state.mainLoading')
   onMainLoading(val: any) {
     this.loading = val;
+    if(val) {
+      setTimeout(() => {
+        this.timePassed = true;
+      }, 15000);
+    } else {
+      this.timePassed = false;
+    }
+    
   }
 
   @Watch('$store.state.mainNotifications', { deep : true, immediate: true })
