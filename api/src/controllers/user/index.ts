@@ -221,10 +221,9 @@ function HANDLE_CONTACT_REQUEST(io: any) {
                     break;
                 
                 case 'REJECTED':
-                    console.log(req.body)
                     event_to_send = 'CONTACT_STATUS_REJECTED';
-                    try {    
-                        const contact = await UM.updateOne({
+                      
+                        await UM.updateOne({
                             _id: req.body.contactId,
                             "contacts.contact_id": req.user._id
                         }, 
@@ -234,7 +233,7 @@ function HANDLE_CONTACT_REQUEST(io: any) {
                             }
                         })
     
-                        const me = await UM.updateOne({
+                        await UM.updateOne({
                             _id: req.user._id,
                             "contacts.contact_id": req.body.contactId
                         }, 
@@ -249,10 +248,6 @@ function HANDLE_CONTACT_REQUEST(io: any) {
                         await sendNotification(my_data, contact_data._id, {message: {event:'REJECTED', status: 'rejected'}}, CONTACT_REQUEST, io, event_to_send)
                         io.of('/user-'+req.user._id).emit(event_to_send, contact_data)
                         res.status(200).json({message: 'rejected'})
-                    } catch (error) {
-                        res.status(500).json({error: error})
-                        throw new Error(error)
-                    }
                     break;
                 
                 case 'RESEND_CANCEL':

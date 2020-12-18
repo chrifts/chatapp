@@ -63,45 +63,43 @@
           </template>
           <v-list class="not-list" v-if="Object.keys(mainNotifications).length > 0">
             <!-- loop notification type -->
-            <v-list-item
-              v-for="(data, notifType) in mainNotifications"
-              :key="notifType"
-              :class="{'d-none': Object.keys(data).length < 1}"
-            >
-                
-                <!-- <span>{{parseNotificationType(notifType)}}</span> -->
-                
-                <v-list style="width: 100%">
-                  <!-- Loop users -->
-                  <v-list-item
-                    v-for="(el, ix) in data"
-                    :key="ix"
-                  >
-                  {{debugFromTempate(el)}}
-                    <div v-if="el.length > 0" :class="{'unread' : el[(el.length - 1)].status == 'unread', 'read' : el[(el.length - 1)].status == 'read'}">
-                      <span v-if="el[(el.length - 1)].status == 'unread'" class="badge-notif"> <v-icon x-small color="red">mdi-circle</v-icon> </span>
-                      <v-list-item-title v-if="notifType == NEW_MESSAGE">{{ el.length }} new {{el.length > 1 ? 'messages' : 'message'}} from 
-                      </v-list-item-title>
-                      <v-list-item-title v-if="notifType == CONTACT_REQUEST"> 
-                        <!-- <span v-if="el[0].message.status == 'connecteds'"> accepted from</span> -->
-                        
-                        <!-- {{el[0].status}} -->
-                        {{parseNotificationType(el[0].message.status)}} 
-                      </v-list-item-title>
-                      <v-list-item-subtitle>{{ el[0].extraDataFrom.email }}</v-list-item-subtitle>  
-                    </div> 
-                  </v-list-item>
-                </v-list>
+            <template v-for="(data, notifType) in mainNotifications">
+              <v-list-item
+                :key="notifType"
+                v-if="Object.keys(data).length > 0"
+               >
               
-              
-            </v-list-item>
-          </v-list>
-          <v-list class="not-list" v-else> 
-              <v-list-item>
-                  <v-list-item-title class="px-3"> 
-                      No notifications
-                  </v-list-item-title>
+                  <!-- <span>{{parseNotificationType(notifType)}}</span> -->                
+                  <v-list style="width: 100%">
+                    <!-- Loop users -->
+                    <v-list-item
+                      v-for="(el, ix) in data"
+                      :key="ix"
+                    >
+                    {{debugFromTempate(el)}}
+                      <div v-if="el.length > 0" :class="{'unread' : el[(el.length - 1)].status == 'unread', 'read' : el[(el.length - 1)].status == 'read'}">
+                        <span v-if="el[(el.length - 1)].status == 'unread'" class="badge-notif"> <v-icon x-small color="red">mdi-circle</v-icon> </span>
+                        <v-list-item-title v-if="notifType == NEW_MESSAGE">{{ el.length }} new {{el.length > 1 ? 'messages' : 'message'}} from 
+                        </v-list-item-title>
+                        <v-list-item-title v-if="notifType == CONTACT_REQUEST"> 
+                          <!-- <span v-if="el[0].message.status == 'connecteds'"> accepted from</span> -->
+                          
+                          <!-- {{el[0].status}} -->
+                          {{parseNotificationType(el[0].message.status)}} 
+                        </v-list-item-title>
+                        <v-list-item-subtitle>{{ el[0].extraDataFrom.email }}</v-list-item-subtitle>  
+                      </div> 
+                    </v-list-item>
+                  </v-list>
               </v-list-item>
+            </template>
+          </v-list>
+          <v-list v-else>
+            <v-list-item>
+              <v-list-item-title> 
+                No notifications
+              </v-list-item-title>
+            </v-list-item>
           </v-list>
         </v-menu>
         <v-btn color="icons" text v-for="item in itemsAuth" :key="item.title" :to="item.link">
@@ -175,6 +173,11 @@ export default class NavBar extends Vue {
     localStorage.setItem("dark", val.toString());
   }
 
+  deleteKey(type) {
+    delete this.mainNotifications[type]
+    this.mainNotifications = [...this.mainNotifications]
+  }
+
   @Watch('isOpen')
   onOpenNotif(val){
     if(!val) {
@@ -228,7 +231,7 @@ export default class NavBar extends Vue {
   }
 
   get mainNotif() {
-    return this.$store.getters.mainNotifs
+   return this.$store.getters.mainNotifs
   }
   get mainLoading() {
     return this.$store.getters.mainLoading;
@@ -327,7 +330,14 @@ export default class NavBar extends Vue {
       this.hasNotifications = false;
       this.totalNotifications = 0;
     }
-    this.mainNotifications = val;
+    const notf = val
+    Object.entries(notf).forEach(([type, contacts])=> {       
+      if(Object.keys(notf[type]).length < 1) {
+        delete notf[type]
+      }
+    })
+    console.log(notf)
+    this.mainNotifications = notf;
   }
 
   @Watch('$store.state.user')

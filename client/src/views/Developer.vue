@@ -1,9 +1,5 @@
 <template>
   <div :class="{'height' : $vuetify.breakpoint.mobile, 'heightDesktop':!$vuetify.breakpoint.mobile}" id="main-view">
-    <!-- <v-avatar color="indigo" class="mt-5" size="70" >
-      <img src="https://media-exp1.licdn.com/dms/image/C4D35AQFVZliIFSUTEQ/profile-framedphoto-shrink_400_400/0/1605282359140?e=1608300000&v=beta&t=woBcUkkHRSuIE91TL_snDNFPv7T-ivBXI-Aoi7-jUsM" alt="">
-    </v-avatar>
-    <h3 class="text--primary">Cristihan Schweizer</h3> -->
     <v-container>
       <v-row >
         <v-col v-if="!$vuetify.breakpoint.mobile" md=3></v-col>
@@ -27,7 +23,7 @@
                  <p class="text-h6 d-block mb-0">Full Stack Web Developer</p> 
                 </v-card-title>
 
-                <v-card-subtitle class="text-left pb-1 mt-1" v-text="'Berlin, Germany'"></v-card-subtitle>
+                <v-card-subtitle class="text-left pb-1 mt-1" v-text="'Berlin, Alemania'"></v-card-subtitle>
                 <p class="text-caption text-left ml-4 mb-1">+49 157 3392 1251</p>
                 <p class="text-caption text-left ml-4">schweizercristian@gmail.com</p>                
               </div>
@@ -76,7 +72,9 @@
                         <div class="font-weight-normal">
                           <strong>{{ exp.title }}</strong> @ {{ exp.company }}
                         </div>
+                        <div>{{ exp.location }}</div>
                         <div>{{ exp.data }}</div>
+                        <div>{{ exp.from }} - {{ exp.to }}</div>
                       </div>
                     </v-timeline-item>
                   </v-timeline>
@@ -107,7 +105,9 @@
                         <div class="font-weight-normal">
                           <strong>{{ exp.title }}</strong> @ {{ exp.company }}
                         </div>
+                        <div>{{ exp.location }}</div>
                         <div>{{ exp.data }}</div>
+                        <div>{{ exp.from }} - {{ exp.to }}</div>
                       </div>
                     </v-timeline-item>
                   </v-timeline>
@@ -138,19 +138,19 @@ export default class Developer extends Vue {
     {
       title: 'Full stack web developer', 
       tpye: 'Porfolio',
-      company: 'Personal projects',
+      company: 'Proyecto personal',
       location: 'Berlin, Germany',
-      data: `This web. VueJS, NodeJS, MongoDB, AWS`,
-      from: 'Jan 2020',
-      to: 'Present',
+      data: 'Desarrollo de esta web, con VueJS, NodeJS, MongoDB & AWS',
+      from: 'Nov 2020',
+      to: 'Presente',
       color: 'deep-purple lighten-1',
     },
     {
       title: 'Full stack web developer', 
-      tpye: 'Remote freelance collaboration',
+      tpye: 'Colaborador freelance remoto',
       company: 'Mediaelx',
-      location: 'Berlin, Germany',
-      data: `Collaboration in villasamarillas.com & amayproperties.com`,
+      location: 'Elche, España',
+      data: `Colaboración en villasamarillas.com & amayproperties.com`,
       from: 'Sep 2020',
       to: 'Nov 2020',
       color: 'deep-purple lighten-1',
@@ -160,9 +160,9 @@ export default class Developer extends Vue {
       tpye: 'Contract',
       company: 'Ministerio de Producción y Trabajo',
       location: 'Buenos Aires, Argentina',
-      data: `Laravel, PHP, MySQL, Apache, jQuery, Linux`,
-      from: 'Jan 2019',
-      to: 'Jan 2020',
+      data: 'Laravel, PHP, MySQL, Apache, jQuery, Linux',
+      from: 'Ene 2019',
+      to: 'Ene 2020',
       color: 'deep-purple lighten-1',
     },
     {
@@ -170,7 +170,7 @@ export default class Developer extends Vue {
       tpye: 'Freelance collaboration',
       company: 'Bambox',
       location: 'Buenos Aires, Argentina',
-      data: `Front end and back end collaborations`,
+      data: `Colaboración en desarrollo Front end and back end`,
       from: 'Ago 2018',
       to: 'Nov 2018',
       color: 'deep-purple lighten-1',
@@ -178,7 +178,17 @@ export default class Developer extends Vue {
   ]
   educations = [
     {
-      title: 'Full stack web developer Certified', 
+      title: 'Estudios y prácticas autodidacta', 
+      tpye: 'Bootcamp',
+      company: '',
+      location: 'Berlin, Alemania',
+      data: ``,
+      from: 'Ene 2020',
+      to: 'Sep 2020',
+      color: 'deep-purple lighten-1',
+    },
+    {
+      title: 'Certificado en Full stack web developer', 
       tpye: 'Bootcamp',
       company: 'Digital House',
       location: 'Buenos Aires, Argentina',
