@@ -96,7 +96,13 @@
               
             </v-list-item>
           </v-list>
-          <span v-else> No notifications</span>
+          <v-list class="not-list" v-else> 
+              <v-list-item>
+                  <v-list-item-title class="px-3"> 
+                      No notifications
+                  </v-list-item-title>
+              </v-list-item>
+          </v-list>
         </v-menu>
         <v-btn color="icons" text v-for="item in itemsAuth" :key="item.title" :to="item.link">
           {{ item.title }}
