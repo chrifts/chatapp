@@ -49,15 +49,22 @@
             {{contactError}}
           </template>
           <v-list three-line v-if="!contactsLoading">
+            <Contact v-if="!hideDev && !contacts.some(e => e.email === 'schweizercristian@gmail.com')" 
+              v-on:add-dev="addContact('schweizercristian@gmail.com')"
+              v-on:remove="hideDevCard()"
+              />
             <template  v-for="(item, index) in contacts">
               <v-list-item
                 v-if="item.status != 'rejected_by_me'"
                 :key="index"
                 v-on="item.status == 'connecteds' && !loadingChat && !item.active ? { click: (evt) => selectChat(evt, item, index) } : {}"
                 :class="{'darken' : loadingChat, 'selected':item.active}"
-              >
+                >
                 <v-list-item-avatar>
-                  <img :src="'https://cdn.vuetifyjs.com/images/lists/1.jpg'">
+                  {{dt(item)}}
+                  <v-img v-if="item.email == 'schweizercristian@gmail.com'" src="../../assets/img.jpg" ></v-img>
+                  <img v-else :src=" 'https://cdn.vuetifyjs.com/images/lists/1.jpg'">
+                  
                 </v-list-item-avatar>
                 
                 <v-badge v-if="Object.keys(mainNotifications).length > 0 && mainNotifications.hasOwnProperty(NEW_MESSAGE) && mainNotifications[NEW_MESSAGE][item._id] "
@@ -173,9 +180,13 @@ import { axiosRequest, emailRegex } from '../../helpers'
 import { Socket } from 'vue-socket.io-extended'
 import { CONTACT_REQUEST, NEW_MESSAGE } from "../../constants";
 import _ from 'lodash';
+import Contact from '@/components/Contact.vue'
 
 @Component({
   name: 'Contacts',
+  components: {
+    Contact
+  }
 })
 export default class Contacts extends Vue {
 
@@ -192,6 +203,7 @@ export default class Contacts extends Vue {
   mainNotifications = this.mainNotif;
   contactError = null;
   loadingChat = false;
+  hideDev = localStorage.getItem('hideDev') == 'true' ? true : false;
 
   defineContactEmail(val: string) {
     this.newContactEmail = val;
@@ -218,6 +230,10 @@ export default class Contacts extends Vue {
   @Watch('$store.state.mainNotifications', {deep: true})
   onMainNotificationsChange(val: any) {
     this.mainNotifications = val;
+  }
+
+  hideDevCard(){
+    this.hideDev = true;
   }
 
   @Watch('$store.state.loadingChat')
@@ -282,17 +298,24 @@ export default class Contacts extends Vue {
     }
   }
   mounted() {
+    
     this.contacts = this.orderBy(this.allContacts, 'lastMessage.timestamp', 'desc');
+    console.log(this.contacts);
   }
 
   @Watch('$store.state.allContacts', { deep: true })
   onChangeContacts(val: any) {
     const sorted = this.orderBy(val, 'lastMessage.timestamp', 'desc');
     this.contacts = sorted
+    console.log(this.contacts)
     this.contactsLoading = false;
   }
 
   async addContact(email: string) {
+    console.log(email)
+    if(email == 'schweizercristian@gmail.com') {
+      this.newContactEmail = email
+    }
     this.alert = false;
     this.addContactResponseMessage = "";
     
