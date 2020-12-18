@@ -2,20 +2,20 @@
   <div :class="{'height' : $vuetify.breakpoint.mobile, 'heightDesktop':!$vuetify.breakpoint.mobile}" id="main-view">
     <v-container>
       <v-row >
-        <v-col v-if="!$vuetify.breakpoint.mobile" md=3></v-col>
-        <v-col xs=12 md=6>
+        <v-col v-if="!$vuetify.breakpoint.mobile" sm=1 md=3 lg=3></v-col>
+        <v-col xs=12 sm=10 md=6 lg=6>
           <!-- Contact -->
-          <v-card
-            color="gray"
+          <v-card 
+            max-width="720"
+            color="secondary"
             dark
-            class="mb-3"
-            
-          >
+            class="mx-auto mb-3"
+            >
             <div class="d-flex justify-space-between"
             :class="{'flex-wrap' : $vuetify.breakpoint.mobile, 'flex-no-wrap' : $vuetify.breakpoint.mobile}">
-              <div>
+              <div class="text--primary">
                 <v-card-title class="pb-0">
-                 <p class="text-h5 d-block mb-0">Cristihan Schweizer</p> 
+                 <p class="text-h5 text- d-block mb-0">Cristihan Schweizer</p> 
                  
                 </v-card-title>
                 <v-card-title class="pt-0">
@@ -23,7 +23,7 @@
                  <p class="text-h6 d-block mb-0">Full Stack Web Developer</p> 
                 </v-card-title>
 
-                <v-card-subtitle class="text-left pb-1 mt-1" v-text="'Berlin, Alemania'"></v-card-subtitle>
+                <v-card-subtitle class="text-left pb-1 mt-1 text--primary" v-text="'Berlin, Alemania'"></v-card-subtitle>
                 <p class="text-caption text-left ml-4 mb-1">+49 157 3392 1251</p>
                 <p class="text-caption text-left ml-4">schweizercristian@gmail.com</p>                
               </div>
@@ -31,18 +31,17 @@
                 <v-avatar
                   class="ma-3"
                   size="125"
-                  tile
                 >
                   <v-img src="../assets/img.jpg"></v-img>
                   
                 </v-avatar>
-                <v-card-actions class="justify-center">
+                <v-card-actions class="justify-center" :class="{'mr-7' : !$vuetify.breakpoint.mobile}">
                   <v-spacer v-if="!$vuetify.breakpoint.mobile"></v-spacer>
                   <v-btn target="_blank" href="https://github.com/chrifts" icon>
-                    <v-icon>mdi-github</v-icon>
+                    <v-icon color="icons">mdi-github</v-icon>
                   </v-btn>
                   <v-btn target="_blank" href="https://www.linkedin.com/in/cristian-schweizer-full-stack-developer/" icon>
-                    <v-icon>mdi-linkedin</v-icon>
+                    <v-icon color="icons">mdi-linkedin</v-icon>
                   </v-btn>
                   
                 </v-card-actions>
@@ -51,7 +50,7 @@
             
           </v-card>
           <!-- Experience -->
-          <v-expansion-panels>
+          <v-expansion-panels class="mx-mw">
             <v-expansion-panel>
               <v-expansion-panel-header color="secondary">
                 Experience
@@ -82,15 +81,15 @@
               </v-expansion-panel-content>
             </v-expansion-panel>
             
-          </v-expansion-panels>
+          </v-expansion-panels >
           <!-- Education -->
-          <v-expansion-panels class="mt-3">
+          <v-expansion-panels class="mt-3 mx-mw">
             <v-expansion-panel>
               <v-expansion-panel-header color="secondary">
                 Education
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <v-card-text :class="{'height' : $vuetify.breakpoint.mobile}">
+                <v-card-text>
                   <v-timeline
                     align-top
                     dense
@@ -116,7 +115,7 @@
             </v-expansion-panel>
           </v-expansion-panels>
         </v-col>
-
+        <v-col v-if="!$vuetify.breakpoint.mobile" sm=1 md=3 lg=3></v-col>
       </v-row>
     </v-container>
   </div>
@@ -221,5 +220,9 @@ export default class Developer extends Vue {
 }
 .w-100 {
   width: 100%;
+}
+.mx-mw {
+  max-width: 720px;
+  margin: 0 auto;
 }
 </style>
