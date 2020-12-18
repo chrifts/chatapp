@@ -96,7 +96,7 @@
           </v-list>
           <v-list v-else>
             <v-list-item>
-              <v-list-item-title> 
+              <v-list-item-title :class="{'top-fix-vmenu' : isWK}"> 
                 No notifications
               </v-list-item-title>
             </v-list-item>
@@ -388,6 +388,9 @@ export default class NavBar extends Vue {
     }
   }
 @media (max-width: 599px) {
+  .top-fix-vmenu {
+    padding-top: 20px;
+  }
   .v-toolbar__content, .v-toolbar__extension, .v-toolbar__items {
     width: 100% !important;
   }
