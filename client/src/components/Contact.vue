@@ -5,8 +5,8 @@
         </v-list-item-avatar>
         <v-list-item-content class="text--primary">
             <v-list-item-title v-html="'Cristihan Schweizer'" />
-            <v-list-item-subtitle> 
-                <v-btn color="green" text @click="_emit('add-dev')">
+            <v-list-item-subtitle > 
+                <v-btn color="green" :x-small="$vuetify.breakpoint.mobile" rounded outlined @click="_emit('add-dev')">
                     Contact the developer! 
                 </v-btn>
                 
