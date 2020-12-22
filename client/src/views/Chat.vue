@@ -1,5 +1,5 @@
 <template>
-  <v-container id="chat" :class="{'pd-0' : $vuetify.breakpoint.mobile}"> 
+  <v-container id="chat" :class="{'pd-0-i': $vuetify.breakpoint.mobile}"> 
     <!-- DESKTOP -->
     <div :class="{'main-content' : !$vuetify.breakpoint.mobile, 'main-content-mobile' : $vuetify.breakpoint.mobile}">
       
@@ -275,7 +275,9 @@ export default class Chat extends Vue {
       }
     }
   }
-
+  .pd-0-i {
+    padding: 0 !important;
+  }
   #chat {
       position: relative;
       z-index: 100;
