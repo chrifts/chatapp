@@ -82,7 +82,7 @@ export default class Profile extends Vue {
   background-color: black;
 }
 .profile {
-  height: calc(100vh - 397px);
+  
   overflow-y: scroll;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
-    <v-container fluid fill-height v-if="!loading">
+    <v-container fluid v-if="!loading" style="padding: 0 !important">
       <v-layout align-center justify-center>
-        <v-flex xs12 sm8 md4>
+        <v-flex xs12 sm8 md4 style="position: relative; top: 0px"> 
           <v-card class="elevation-12">
             <v-toolbar color="primary">
               <v-toolbar-title>Login</v-toolbar-title>

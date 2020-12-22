@@ -1,5 +1,5 @@
 <template>
-  <v-container id="chat">
+  <v-container id="chat" :class="{'pd-0' : $vuetify.breakpoint.mobile}"> 
     <!-- DESKTOP -->
     <div :class="{'main-content' : !$vuetify.breakpoint.mobile, 'main-content-mobile' : $vuetify.breakpoint.mobile}">
       

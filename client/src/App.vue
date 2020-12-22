@@ -1,7 +1,13 @@
 <template>
   
     <v-app 
-      backgroundColor="primary" :class="{'mobile-container' : $vuetify.breakpoint.mobile, 'padding-ios': $root.$data.platform.operatingSystem == 'ios' && $root.$data.platform.platform == 'web' && !standalone && safari, 'padding-ios-wk': !standalone && !safari }">
+      backgroundColor="primary" 
+      :class="{
+              'mobile-chat-selected' : $vuetify.breakpoint.mobile && chatSelected,
+              'mobile-container app-height-mobile' : $vuetify.breakpoint.mobile && !chatSelected,
+              'padding-ios': $root.$data.platform.operatingSystem == 'ios' && $root.$data.platform.platform == 'web' && !standalone && safari, 
+              'padding-ios-wk': !standalone && !safari,
+              }">
       <NavBar 
         v-if="!$vuetify.breakpoint.mobile"  
         style="z-index: 1;"
@@ -41,6 +47,7 @@ export default class App extends Vue {
   safari = /safari/.test( this.userAgent );
   ios = /iphone|ipod|ipad/.test( this.userAgent );
   isWK = (!this.standalone && !this.safari)
+  chatSelected = this.$store.getters.selectedChat;
   
   @Watch('$store.state.user')
   onUser(val: any) {
@@ -50,6 +57,15 @@ export default class App extends Vue {
         this.$store.commit('setFirstLoad', true);
       }
     }
+  }
+
+  @Watch('$store.state.selectedChat')
+  onChatSelected(val: any) {
+   if(val) {
+     this.chatSelected = true;
+   } else {
+     this.chatSelected = false;
+   }
   }
 
   @Watch('$store.state.firstLoad') 
@@ -145,9 +161,11 @@ export default class App extends Vue {
   }
   .mobile-container {
     .v-application--wrap {
-      #main-view {
-        height: 100%;
-      }
+      height: 100%;
+      min-height: unset !important;
+      // #main-view {
+        
+      // }
       #chat {
         padding: 0 !important;
       }
@@ -157,7 +175,8 @@ export default class App extends Vue {
   }
   .padding-ios {
     .v-application--wrap {
-      padding-bottom: 75px !important;
+      // padding-bottom: 114px !important;
+      //padding-bottom: 75px !important;
     }
     
   }
@@ -166,6 +185,15 @@ export default class App extends Vue {
       padding-top: 20px !important;
     }
     
+  }
+  .mobile-chat-selected {
+    .v-application--wrap {
+      min-height: unset !important;
+    }
+    height: calc(100% - env(safe-area-inset-bottom)) !important;
+  }
+  .app-height-mobile {
+    height: calc(100% - calc(56px + env(safe-area-inset-bottom))) !important;
   }
   #app {
     position: absolute;

@@ -211,7 +211,7 @@ export default class Developer extends Vue {
 </script>
 <style lang="scss" scoped>
 .height {
-  height: calc(100vh - 397px);
+  
   overflow-y: scroll;
 }
 .heightDesktop {

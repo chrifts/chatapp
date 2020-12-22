@@ -1,8 +1,7 @@
 <template>
-
-  <v-container fluid :fill-height="$vuetify.breakpoint.mobile ? false : true" v-if="!loading" style="overflow-y: scroll;">
+  <v-container fluid v-if="!loading" style="overflow-y: scroll; padding: 0 !important">
     <v-layout align-center justify-center>
-      <v-flex xs12 sm8 md4>
+      <v-flex xs12 sm8 md4 style="position: relative; top: 0px" class="mb-10 pb-4">
         <v-card class="elevation-12">
           <v-toolbar color="primary">
             <v-toolbar-title>Register</v-toolbar-title>

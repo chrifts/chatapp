@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="{'fixed-bottom':$vuetify.breakpoint.mobile}">
     <!-- DESKTOP -->
     <v-bottom-navigation 
       background-color="secondary--lighten2"
@@ -370,7 +370,11 @@ export default class NavBar extends Vue {
   }
 </style>
 <style lang="scss" scoped>
-
+.fixed-bottom {
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+}
 .unread {
   background-color: var(--v-secondary-base);
   padding: 20px;
