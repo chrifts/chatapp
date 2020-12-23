@@ -90,7 +90,7 @@
                           {{parseNotificationType(el[0].message.status)}} 
                         </v-list-item-title>
                         <v-list-item-subtitle>{{ el[0].extraDataFrom.email }}</v-list-item-subtitle>
-                        <v-btn @click="deleteNotif(el[0]._id)">delete</v-btn>  
+                        <v-btn class="removeNot" icon @click="deleteNotif(el[0])">X</v-btn>  
                       </div> 
                     </v-list-item>
                   </v-list>
@@ -176,8 +176,21 @@ export default class NavBar extends Vue {
     localStorage.setItem("dark", val.toString());
   }
 
-  deleteNotif(id){
-    console.log(id);
+  async deleteNotif(item){
+    const body = {
+      _id: item._id,
+      type: item.type,
+      from: item.from,
+      notStatus: item.status,
+    }
+    
+    try {
+      this.$store.commit('deleteNot', body)
+      const res = await axiosRequest('POST', (this.$root as any).urlApi + '/user/remove-notification', body, {headers:{"x-auth-token":this.$cookies.get('jwt')}})  
+      console.log(res)
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   deleteKey(type) {
@@ -382,13 +395,19 @@ export default class NavBar extends Vue {
   bottom: 0px;
   width: 100%;
 }
+.removeNot {
+  position: absolute;
+  right: 10px;
+  top: 20px;
+  
+}
 .unread {
   background-color: var(--v-secondary-base);
-  padding: 20px;
+  padding: 20px 60px;
   width: 100%;
 }
 .read {
-  padding: 20px;
+  padding: 20px 40px;
   width: 100%;
 }
 .v-menu__content {

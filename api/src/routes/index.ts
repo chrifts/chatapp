@@ -3,7 +3,7 @@ const AuthController = require("../controllers/AuthController");
 const Middleware = require("../middlewares");
 const UserModel = require ("../models/user.model");
 
-import { ADD_CONTACT, GET_CONTACTS, HANDLE_CONTACT_REQUEST, READ_NOTIFICATIONS } from "../controllers/user/index";
+import { ADD_CONTACT, GET_CONTACTS, HANDLE_CONTACT_REQUEST, READ_NOTIFICATIONS, DELETE_NOTIFICATION } from "../controllers/user/index";
 
 import { getOrCreate, postMessage, getMessages, clearNotifications } from '../controllers/chat/index';
 
@@ -33,6 +33,8 @@ module.exports = function(io: any) {
     router.post("/user/handle-contact-request", Middleware.checkAuth, HANDLE_CONTACT_REQUEST(io));
 
     router.post("/user/read-notifications", Middleware.checkAuth, READ_NOTIFICATIONS());
+
+    router.post("/user/remove-notification", Middleware.checkAuth, DELETE_NOTIFICATION());
 
     router.post("/chat/get-or-create", Middleware.checkAuth, getOrCreate);
 
