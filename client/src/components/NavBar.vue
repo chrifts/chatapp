@@ -78,7 +78,9 @@
                     >
                     {{debugFromTempate(el)}}
                       <div v-if="el.length > 0" :class="{'unread' : el[(el.length - 1)].status == 'unread', 'read' : el[(el.length - 1)].status == 'read'}">
-                        <span v-if="el[(el.length - 1)].status == 'unread'" class="badge-notif"> <v-icon x-small color="red">mdi-circle</v-icon> </span>
+                        <span v-if="el[(el.length - 1)].status == 'unread'" class="badge-notif">
+                          <v-icon x-small color="red">mdi-circle</v-icon> 
+                        </span>
                         <v-list-item-title v-if="notifType == NEW_MESSAGE">{{ el.length }} new {{el.length > 1 ? 'messages' : 'message'}} from 
                         </v-list-item-title>
                         <v-list-item-title v-if="notifType == CONTACT_REQUEST"> 
@@ -87,7 +89,8 @@
                           <!-- {{el[0].status}} -->
                           {{parseNotificationType(el[0].message.status)}} 
                         </v-list-item-title>
-                        <v-list-item-subtitle>{{ el[0].extraDataFrom.email }}</v-list-item-subtitle>  
+                        <v-list-item-subtitle>{{ el[0].extraDataFrom.email }}</v-list-item-subtitle>
+                        <v-btn @click="deleteNotif(el[0]._id)">delete</v-btn>  
                       </div> 
                     </v-list-item>
                   </v-list>
@@ -171,6 +174,10 @@ export default class NavBar extends Vue {
     const val = this.$vuetify.theme.dark ? false : true
     this.$vuetify.theme.dark = val;
     localStorage.setItem("dark", val.toString());
+  }
+
+  deleteNotif(id){
+    console.log(id);
   }
 
   deleteKey(type) {
