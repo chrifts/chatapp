@@ -6,6 +6,7 @@
       </v-icon>
     </v-avatar>
     <h1 class="text--primary">{{ user.profile.name ? user.profile.name + ' ' + user.profile.lastName : ''  }}</h1>
+    <p class="text-overline text--primary">{{user.email}}</p>
     <v-container>
       <v-row >
         <v-col cols=12 v-if="$vuetify.breakpoint.mobile">

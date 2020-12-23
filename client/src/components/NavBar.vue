@@ -407,7 +407,7 @@ export default class NavBar extends Vue {
   width: 100%;
 }
 .read {
-  padding: 20px 40px;
+  padding: 20px 60px;
   width: 100%;
 }
 .v-menu__content {
