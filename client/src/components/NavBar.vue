@@ -1,7 +1,9 @@
 <template>
   <div :class="{'fixed-bottom':$vuetify.breakpoint.mobile}">
     <!-- DESKTOP -->
-    <v-bottom-navigation 
+    <v-bottom-navigation
+      style="justify-content: space-around !important"
+      id="theNavBar"
       background-color="secondary--lighten2"
       :class="{'d-none' : chatSelected && $vuetify.breakpoint.mobile }">
       <template v-if="loggedIn && !loading && !$vuetify.breakpoint.mobile">
@@ -29,7 +31,7 @@
           :key="item.title"
           :to="item.link"
         >
-          {{ item.title }}
+          {{ $vuetify.breakpoint.mobile ? '' : item.title }}
           <v-icon center color="icons">{{ item.icon }}</v-icon>
         </v-btn>
       </template>
@@ -49,6 +51,7 @@
               v-bind="attrs"
               v-on="on"
             >
+              {{ $vuetify.breakpoint.mobile ? '' : 'Notifications' }}
               <v-badge
                 color="red"
                 overlap
@@ -106,15 +109,11 @@
           </v-list>
         </v-menu>
         <v-btn color="icons" text v-for="item in itemsAuth" :key="item.title" :to="item.link">
-          {{ item.title }}
+          {{ $vuetify.breakpoint.mobile ? '' : item.title }}
           <v-icon center color="icons">{{ item.icon }}</v-icon>
         </v-btn>
       </template>  
-      <v-btn color="icons" text @click="changeTheme">
-        <v-icon center color="icons">
-          mdi-theme-light-dark
-        </v-icon>
-      </v-btn>
+      <Theme v-if="!$vuetify.breakpoint.mobile" />
       <v-btn color="icons" text  to="cristihanschweizer" v-if="!$vuetify.breakpoint.mobile || !loggedIn">
           Developer
           <v-icon center color="icons">mdi-account-circle</v-icon>
@@ -144,12 +143,14 @@ import { CONTACT_REQUEST, NEW_MESSAGE } from "../constants";
 import { axiosRequest } from '../helpers';
 import SwitchSocket from '@/components/SwitchSocket.vue'
 import Logout from '@/components/Logout.vue'
+import Theme from '@/components/Theme.vue'
 
 @Component({
   name: 'NavBar',
   components: {
     SwitchSocket,
-    Logout
+    Logout,
+    Theme
   }
 })
 export default class NavBar extends Vue {
@@ -169,12 +170,6 @@ export default class NavBar extends Vue {
   readed = false;
   hasNotifications = false;
   totalNotifications = 0;
-  
-  changeTheme(){
-    const val = this.$vuetify.theme.dark ? false : true
-    this.$vuetify.theme.dark = val;
-    localStorage.setItem("dark", val.toString());
-  }
 
   async deleteNotif(item){
     const body = {
@@ -390,6 +385,12 @@ export default class NavBar extends Vue {
   }
 </style>
 <style lang="scss" scoped>
+#theNavBar {
+  a, button {
+    max-width: 100px;
+    width: 100%;
+  }
+}
 .fixed-bottom {
   position: fixed;
   bottom: 0px;
@@ -418,6 +419,12 @@ export default class NavBar extends Vue {
     }
   }
 @media (max-width: 599px) {
+  #theNavBar {
+    a, button {
+      max-width: 65px;
+      width: 100%;
+    }
+  }
   .top-fix-vmenu {
     padding-top: 20px;
   }
