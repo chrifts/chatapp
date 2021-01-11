@@ -35,7 +35,7 @@ userSchema.methods = {
         { user: { _id, email } },
         ACCESS_TOKEN_SECRET,
         {
-          expiresIn: "24h",
+          expiresIn: "30d",
         }
       );
       return accessToken;
