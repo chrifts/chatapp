@@ -105,7 +105,7 @@ export default class Login extends Vue {
         store.commit("setMainLoading", false);
         return;
       }
-      console.log(user);
+      // console.log(user);
       this.$cookies.set('jwt', user.data.accessToken, {
         secure: false
       });

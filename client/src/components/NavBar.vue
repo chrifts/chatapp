@@ -182,7 +182,7 @@ export default class NavBar extends Vue {
     try {
       this.$store.commit('deleteNot', body)
       const res = await axiosRequest('POST', (this.$root as any).urlApi + '/user/remove-notification', body, {headers:{"x-auth-token":this.$cookies.get('jwt')}})  
-      console.log(res)
+      // console.log(res)
     } catch (error) {
       throw new Error(error);
     }
@@ -222,7 +222,7 @@ export default class NavBar extends Vue {
     return menuItems;
   }
   debugFromTempate(q) {
-    console.log(q);
+    // console.log(q);
   }
   get itemsAuth() {
     const menuItems = [
@@ -351,7 +351,7 @@ export default class NavBar extends Vue {
         delete notf[type]
       }
     })
-    console.log(notf)
+    // console.log(notf)
     this.mainNotifications = notf;
   }
 

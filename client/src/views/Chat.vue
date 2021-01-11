@@ -141,7 +141,7 @@ export default class Chat extends Vue {
           const socket = io(socketUrl+'/chat-'+this.chatRoom, {query: {members: members}});
           this.socket = socket;
           this.socket.on('broadcast', (data)=>{
-              console.log(data)
+              // console.log(data)
           })
           this.socket.on('reconnect', async ()=>{
             const res = await axiosRequest('POST', this.api + '/chat/get-or-create', {members: members}, {headers:{"x-auth-token":this.$cookies.get('jwt')}})

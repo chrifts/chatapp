@@ -210,7 +210,7 @@ export default class Contacts extends Vue {
   }
 
   dt(q){
-    console.log(q)
+    // console.log(q)
   }
   
   get mydata() {
@@ -300,19 +300,19 @@ export default class Contacts extends Vue {
   mounted() {
     
     this.contacts = this.orderBy(this.allContacts, 'lastMessage.timestamp', 'desc');
-    console.log(this.contacts);
+    // console.log(this.contacts);
   }
 
   @Watch('$store.state.allContacts', { deep: true })
   onChangeContacts(val: any) {
     const sorted = this.orderBy(val, 'lastMessage.timestamp', 'desc');
     this.contacts = sorted
-    console.log(this.contacts)
+    // console.log(this.contacts)
     this.contactsLoading = false;
   }
 
   async addContact(email: string) {
-    console.log(email)
+    // console.log(email)
     if(email == 'schweizercristian@gmail.com') {
       this.newContactEmail = email
     }

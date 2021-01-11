@@ -22,7 +22,7 @@ export default class Logout extends Vue {
         if(this.$socket && this.$socket.client) {
             this.$socket.client.disconnect();
         }
-        console.log(this.reload)
+        // console.log(this.reload)
         this.$store.dispatch("LOGOUT_USER", this.reload);
         this.$cookies.remove('jwt');
         this.$cookies.remove('refreshToken');
