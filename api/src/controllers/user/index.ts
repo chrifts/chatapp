@@ -1,5 +1,6 @@
 import { CONTACT_REQUEST } from "../../constants";
 import { readNotification, sendNotification } from "../../helpers";
+const ObjectID = require('mongodb').ObjectID;
 
 const UM = require("../../models/user.model");
 
@@ -325,9 +326,31 @@ function READ_NOTIFICATIONS() {
     return callback;
 }
 
+function DELETE_NOTIFICATION() {
+    const callback = async (req, res) => {
+        try {        
+            const notfId = req.body.notStatus == 'read' ? req.body._id : ObjectID(req.body._id);
+            const usr = await UM.updateOne(
+                {
+                    "_id": req.user._id,
+                },
+                { 
+                    "$unset": {[`notifications.${req.body.type}.${req.body.from}`] : 1 } 
+                }
+            )
+            res.status(200).json({data:'ok'})
+        } catch (error) {
+            res.status(500).json({error: 'error reading notifications'})
+            throw new Error(error)
+        }
+    }
+    return callback; 
+}
+
 export {
     ADD_CONTACT,
     GET_CONTACTS,
     HANDLE_CONTACT_REQUEST,
-    READ_NOTIFICATIONS
+    READ_NOTIFICATIONS,
+    DELETE_NOTIFICATION
 }

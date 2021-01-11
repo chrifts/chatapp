@@ -6,6 +6,7 @@
       </v-icon>
     </v-avatar>
     <h1 class="text--primary">{{ user.profile.name ? user.profile.name + ' ' + user.profile.lastName : ''  }}</h1>
+    <p class="text-overline text--primary">{{user.email}}</p>
     <v-container>
       <v-row >
         <v-col cols=12 v-if="$vuetify.breakpoint.mobile">
@@ -17,6 +18,10 @@
         <v-col cols=12>
           <Logout />
         </v-col>
+        <v-col cols=12>
+          <Theme v-if="$vuetify.breakpoint.mobile" />
+        </v-col>
+        
         <v-col cols=12>
           <v-btn color="icons" text  to="cristihanschweizer" v-if="$vuetify.breakpoint.mobile">
           Developer info
@@ -35,6 +40,7 @@ import Component from "vue-class-component";
 import JSONFormatter from 'json-formatter-js'
 import SwitchSocket from '@/components/SwitchSocket.vue'
 import Logout from '@/components/Logout.vue'
+import Theme from '@/components/Theme.vue'
 import { Watch } from 'vue-property-decorator';
 
 @Component({
@@ -42,6 +48,7 @@ import { Watch } from 'vue-property-decorator';
   components: {
     SwitchSocket,
     Logout,
+    Theme
   }
 })
 export default class Profile extends Vue {

@@ -1,7 +1,9 @@
 <template>
   <div :class="{'fixed-bottom':$vuetify.breakpoint.mobile}">
     <!-- DESKTOP -->
-    <v-bottom-navigation 
+    <v-bottom-navigation
+      style="justify-content: space-around !important"
+      id="theNavBar"
       background-color="secondary--lighten2"
       :class="{'d-none' : chatSelected && $vuetify.breakpoint.mobile }">
       <template v-if="loggedIn && !loading && !$vuetify.breakpoint.mobile">
@@ -29,7 +31,7 @@
           :key="item.title"
           :to="item.link"
         >
-          {{ item.title }}
+          {{ $vuetify.breakpoint.mobile ? '' : item.title }}
           <v-icon center color="icons">{{ item.icon }}</v-icon>
         </v-btn>
       </template>
@@ -49,6 +51,7 @@
               v-bind="attrs"
               v-on="on"
             >
+              {{ $vuetify.breakpoint.mobile ? '' : 'Notifications' }}
               <v-badge
                 color="red"
                 overlap
@@ -90,7 +93,7 @@
                           {{parseNotificationType(el[0].message.status)}} 
                         </v-list-item-title>
                         <v-list-item-subtitle>{{ el[0].extraDataFrom.email }}</v-list-item-subtitle>
-                        <v-btn @click="deleteNotif(el[0]._id)">delete</v-btn>  
+                        <v-btn class="removeNot" icon @click="deleteNotif(el[0])">X</v-btn>  
                       </div> 
                     </v-list-item>
                   </v-list>
@@ -106,15 +109,11 @@
           </v-list>
         </v-menu>
         <v-btn color="icons" text v-for="item in itemsAuth" :key="item.title" :to="item.link">
-          {{ item.title }}
+          {{ $vuetify.breakpoint.mobile ? '' : item.title }}
           <v-icon center color="icons">{{ item.icon }}</v-icon>
         </v-btn>
       </template>  
-      <v-btn color="icons" text @click="changeTheme">
-        <v-icon center color="icons">
-          mdi-theme-light-dark
-        </v-icon>
-      </v-btn>
+      <Theme v-if="!$vuetify.breakpoint.mobile" />
       <v-btn color="icons" text  to="cristihanschweizer" v-if="!$vuetify.breakpoint.mobile || !loggedIn">
           Developer
           <v-icon center color="icons">mdi-account-circle</v-icon>
@@ -144,12 +143,14 @@ import { CONTACT_REQUEST, NEW_MESSAGE } from "../constants";
 import { axiosRequest } from '../helpers';
 import SwitchSocket from '@/components/SwitchSocket.vue'
 import Logout from '@/components/Logout.vue'
+import Theme from '@/components/Theme.vue'
 
 @Component({
   name: 'NavBar',
   components: {
     SwitchSocket,
-    Logout
+    Logout,
+    Theme
   }
 })
 export default class NavBar extends Vue {
@@ -169,15 +170,22 @@ export default class NavBar extends Vue {
   readed = false;
   hasNotifications = false;
   totalNotifications = 0;
-  
-  changeTheme(){
-    const val = this.$vuetify.theme.dark ? false : true
-    this.$vuetify.theme.dark = val;
-    localStorage.setItem("dark", val.toString());
-  }
 
-  deleteNotif(id){
-    console.log(id);
+  async deleteNotif(item){
+    const body = {
+      _id: item._id,
+      type: item.type,
+      from: item.from,
+      notStatus: item.status,
+    }
+    
+    try {
+      this.$store.commit('deleteNot', body)
+      const res = await axiosRequest('POST', (this.$root as any).urlApi + '/user/remove-notification', body, {headers:{"x-auth-token":this.$cookies.get('jwt')}})  
+      console.log(res)
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   deleteKey(type) {
@@ -377,18 +385,30 @@ export default class NavBar extends Vue {
   }
 </style>
 <style lang="scss" scoped>
+#theNavBar {
+  a, button {
+    max-width: 100px;
+    width: 100%;
+  }
+}
 .fixed-bottom {
   position: fixed;
   bottom: 0px;
   width: 100%;
 }
+.removeNot {
+  position: absolute;
+  right: 10px;
+  top: 20px;
+  
+}
 .unread {
   background-color: var(--v-secondary-base);
-  padding: 20px;
+  padding: 20px 60px;
   width: 100%;
 }
 .read {
-  padding: 20px;
+  padding: 20px 60px;
   width: 100%;
 }
 .v-menu__content {
@@ -399,6 +419,12 @@ export default class NavBar extends Vue {
     }
   }
 @media (max-width: 599px) {
+  #theNavBar {
+    a, button {
+      max-width: 65px;
+      width: 100%;
+    }
+  }
   .top-fix-vmenu {
     padding-top: 20px;
   }

@@ -4,7 +4,7 @@
         <v-col cols=12>
           <v-expansion-panels>
             <v-expansion-panel>
-              <v-expansion-panel-header color="secondary lighten-3">
+              <v-expansion-panel-header color="primary">
                 <template v-slot:default="{ open }">
                   <v-row no-gutters>
                     <v-col cols="12" class="">
@@ -360,6 +360,12 @@ export default class Contacts extends Vue {
 }
 </script>
 <style lang="scss" scoped>
+.v-expansion-panel::before {
+  box-shadow: none;
+}
+.v-expansion-panels{
+  border: 2px solid var(--v-secondary-darken3)
+}
 .v-menu__content {
   background-color: var(--v-primary-base);
   padding: 10px;

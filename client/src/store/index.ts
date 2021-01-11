@@ -49,7 +49,12 @@ export default new Vuex.Store({
         delete state.mainNotifications[NEW_MESSAGE][payload]
         state.mainNotifications = {...state.mainNotifications}
       }
-      
+    },
+    deleteNot(state, payload) {
+        state.mainNotifications[payload.type][payload.from] = [];
+        console.log(state.mainNotifications)
+        delete state.mainNotifications[payload.type][payload.from];
+        state.mainNotifications = {...state.mainNotifications}
     },
     updateNotifications(state, payload){
       if(payload == 'logout') {

@@ -55,7 +55,7 @@ app.use("/api", api);
 
 
 if(process.env.NODE_ENV == 'development') {
-  web.listen(3000, '192.168.178.20', function () {
+  web.listen(3000, '192.168.178.31', function () {
     console.log('App is listening on port 3000!');
   });
 } else {
