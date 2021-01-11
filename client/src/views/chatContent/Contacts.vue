@@ -377,6 +377,7 @@ export default class Contacts extends Vue {
 }
 
 .col-contacts {
+  overflow-y: scroll;
   background-color: var(--v-primary-base);
   border-right: 1px solid var(--v-secondary-base);
   padding-top: 0 !important;
