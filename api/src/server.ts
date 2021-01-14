@@ -8,18 +8,21 @@ connectDB();
 const allowedOrigins = ['https://www.chatapp.website']; //MAIN APP CORS
 // Create a new express app instance
 const app: express.Application = express();
-app.use(cors({
-    origin: function(origin, callback){
-        if(!origin) return callback(null, true);
-        if(allowedOrigins.indexOf(origin) === -1) {
-            var msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-            return callback(new Error(msg), false);
-        }
-        return callback(null, true);
-    }
-    })
-)
-// app.use(cors())
+if(process.env.NODE_ENV == 'development') {
+  app.use(cors())
+} else {
+  app.use(cors({
+      origin: function(origin, callback){
+          if(!origin) return callback(null, true);
+          if(allowedOrigins.indexOf(origin) === -1) {
+              var msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+              return callback(new Error(msg), false);
+          }
+          return callback(null, true);
+      }
+      })
+  )
+}
 app.use(express.urlencoded({limit: "16mb", extended: true, parameterLimit:50000}));
 app.use(express.json({limit: "16mb"}));
 
@@ -55,7 +58,7 @@ app.use("/api", api);
 
 
 if(process.env.NODE_ENV == 'development') {
-  web.listen(3000, '192.168.178.31', function () {
+  web.listen(3000, '192.168.178.20', function () {
     console.log('App is listening on port 3000!');
   });
 } else {

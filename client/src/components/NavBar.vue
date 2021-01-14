@@ -64,9 +64,9 @@
             </v-btn>
             
           </template>
-          <v-list class="not-list" v-if="Object.keys(mainNotifications).length > 0">
+          <v-list class="not-list" v-if="Object.keys(mainNotif).length > 0">
             <!-- loop notification type -->
-            <template v-for="(data, notifType) in mainNotifications">
+            <template v-for="(data, notifType) in mainNotif">
               <v-list-item
                 :key="notifType"
                 v-if="Object.keys(data).length > 0"
@@ -166,7 +166,6 @@ export default class NavBar extends Vue {
   loading = false;
   loggedIn = this.userLoggedIn;
   appName = process.env.VUE_APP_NAME;
-  mainNotifications = this.mainNotif;
   readed = false;
   hasNotifications = false;
   totalNotifications = 0;
@@ -187,16 +186,10 @@ export default class NavBar extends Vue {
       throw new Error(error);
     }
   }
-
-  deleteKey(type) {
-    delete this.mainNotifications[type]
-    this.mainNotifications = [...this.mainNotifications]
-  }
-
   @Watch('isOpen')
   onOpenNotif(val){
     if(!val) {
-      this.readNotifications(this.mainNotifications)
+      this.readNotifications(this.mainNotif)
     }
   }
   @Watch('$store.state.mainAppSocketStatus')
@@ -324,7 +317,6 @@ export default class NavBar extends Vue {
 
   @Watch('$store.state.mainNotifications', { deep : true, immediate: true })
   onMainNotificationsChange(val: any) {
-    
     let totalN = 0;
     Object.entries(val).forEach(([type, contacts])=> {
       if(Object.keys(contacts as {}).length > 0) {
@@ -353,12 +345,11 @@ export default class NavBar extends Vue {
     })
     // console.log(notf)
     if(this.totalNotifications > 0) {
-      document.getElementById("app-title").innerHTML = '('+ this.totalNotifications +') Chatapp - Cristihan Schweizer';  
+      (document.getElementById("app-title") as HTMLElement).innerHTML = '('+ this.totalNotifications +') Chatapp - Cristihan Schweizer';  
     } else {
-      document.getElementById("app-title").innerHTML = 'Chatapp - Cristihan Schweizer';
+      (document.getElementById("app-title") as HTMLElement).innerHTML = 'Chatapp - Cristihan Schweizer';
     }
     
-    this.mainNotifications = notf;
   }
 
   @Watch('$store.state.user')
