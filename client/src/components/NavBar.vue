@@ -352,6 +352,12 @@ export default class NavBar extends Vue {
       }
     })
     // console.log(notf)
+    if(this.totalNotifications > 0) {
+      document.getElementById("app-title").innerHTML = '('+ this.totalNotifications +') Chatapp - Cristihan Schweizer';  
+    } else {
+      document.getElementById("app-title").innerHTML = 'Chatapp - Cristihan Schweizer';
+    }
+    
     this.mainNotifications = notf;
   }
 
